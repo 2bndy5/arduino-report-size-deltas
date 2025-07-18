@@ -3,7 +3,7 @@
 //! JSON formats produced by the [arduino/compile-sketches] action.
 //!
 //! [arduino/compile-sketches]: https://github.com/arduino/compile-sketches
-use crate::error::JsonError;
+use crate::{CommentAssemblyError, JsonError};
 use std::{fs, path::Path};
 pub mod structs;
 use structs::{Report, ReportOld};
@@ -12,7 +12,7 @@ use structs::{Report, ReportOld};
 ///
 /// This will automatically try to parsing old JSON formats when
 /// parsing the newer format fails syntactically.
-pub fn parse_json<P: AsRef<Path>>(path: P) -> Result<Report, JsonError> {
+pub(crate) fn parse_json<P: AsRef<Path>>(path: P) -> Result<Report, JsonError> {
     let asset = fs::read_to_string(path)?;
     match serde_json::from_str::<Report>(&asset) {
         Ok(report) => Ok(report),
@@ -32,6 +32,33 @@ pub fn parse_json<P: AsRef<Path>>(path: P) -> Result<Report, JsonError> {
             }
         }
     }
+}
+
+/// Recursively scans the given `sketches_path` and parses any existing JSON files as
+/// sketch report artifacts.
+pub fn parse_artifacts<P: AsRef<Path>>(
+    sketches_path: P,
+) -> Result<Vec<Report>, CommentAssemblyError> {
+    let mut reports = vec![];
+    for entry in fs::read_dir(&sketches_path)? {
+        let path = entry?.path();
+        if path.is_dir() {
+            reports.extend(parse_artifacts(path)?);
+        } else if path
+            .extension()
+            .is_some_and(|ext| ext.to_string_lossy() == "json")
+        {
+            let report = parse_json(&path)?;
+            if report.is_valid() {
+                reports.push(report);
+            } else {
+                log::warn!("Skipping {path:?} since it does not contain sufficient information.");
+            }
+        } else {
+            log::debug!("Ignoring non-JSON file: {}", path.to_string_lossy());
+        }
+    }
+    Ok(reports)
 }
 
 #[cfg(test)]

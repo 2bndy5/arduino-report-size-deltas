@@ -1,0 +1,30 @@
+name: Test Self
+
+on:
+  pull_request:
+    branches: ['main']
+  workflow_dispatch:
+
+jobs:
+  create-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload test report artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          path: tests/test_assets/**/*.json
+          name: sketch-reports
+
+  run-action:
+    needs: [create-assets]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: sketch-reports
+          path: sketches-reports
+      - name: Report size deltas
+        uses: ./

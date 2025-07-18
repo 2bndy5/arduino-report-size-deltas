@@ -1,8 +1,8 @@
 //! A module to define functions that generate a markdown comment.
 mod helpers;
-use std::{fs, path::Path};
+use std::path::Path;
 mod structs;
-use crate::{CommentAssemblyError, reports::parse_json};
+use crate::{CommentAssemblyError, reports::parse_artifacts};
 pub use helpers::COMMENT_MARKER;
 use helpers::{generate_detailed_table, generate_general_table};
 
@@ -13,23 +13,7 @@ use helpers::{generate_detailed_table, generate_general_table};
 ///
 /// When successful, this returns a [`String`] in markdown syntax.
 pub fn generate_comment<P: AsRef<Path>>(sketches_path: P) -> Result<String, CommentAssemblyError> {
-    let mut reports = vec![];
-    for entry in fs::read_dir(&sketches_path)? {
-        let path = entry?.path();
-        if path
-            .extension()
-            .is_some_and(|ext| ext.to_string_lossy() == "json")
-        {
-            let report = parse_json(&path)?;
-            if report.is_valid() {
-                reports.push(report);
-            } else {
-                log::warn!("Skipping {path:?} since it does not contain sufficient information.");
-            }
-        } else {
-            log::debug!("Ignoring non-JSON file: {}", path.to_string_lossy());
-        }
-    }
+    let mut reports = parse_artifacts(&sketches_path)?;
     if reports.is_empty() {
         log::error!(
             "No delta size data found in the PR's artifacts (in path {}). \
