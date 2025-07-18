@@ -15,9 +15,6 @@ target/
 
 # End of https://www.toptal.com/developers/gitignore/api/rust
 
-# generated test output
-tests/out.md
-
 # generated release notes
 */ReleaseNotes.md
 
