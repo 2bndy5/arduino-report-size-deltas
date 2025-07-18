@@ -10,6 +10,8 @@ on:
       - '**/*.rs'
       - Cargo.toml
       - .github/workflows/rust.yml
+    tags:
+      - v*
   pull_request:
     branches: [main]
     paths:
