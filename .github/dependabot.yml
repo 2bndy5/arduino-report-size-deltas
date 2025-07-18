@@ -17,8 +17,6 @@ updates:
     directory: /
     schedule:
       interval: "weekly"
-    ignore:
-      - dependency-name: cpp-linter
     groups:
       cargo:
         patterns:

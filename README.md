@@ -1,5 +1,12 @@
 # Arduino-report-size-deltas
 
+[![rust-ci-badge]][rust-ci-runs] [![codecov-badge]][codecov-link]
+
+[rust-ci-badge]: https://github.com/2bndy5/arduino-report-size-deltas/actions/workflows/rust.yml/badge.svg
+[rust-ci-runs]: https://github.com/2bndy5/arduino-report-size-deltas/actions/workflows/rust.yml
+[codecov-badge]: https://codecov.io/github/2bndy5/arduino-report-size-deltas/graph/badge.svg?token=W9SAQIH91A
+[codecov-link]: https://codecov.io/github/2bndy5/arduino-report-size-deltas
+
 A CLI tool designed for CI workflows that posts comments on a Pull Request about the memory size of Arduino sketches.
 
 This is a port of [`arduino/report-size-deltas` GitHub action][original GitHub Action] from python to rust.
@@ -25,7 +32,7 @@ The [original GitHub Action] has some disadvantages:
 ### Incomplete feature parity
 
 Some features present in the [original GitHub Action] are not implemented in this port.
-These features can be added upon request, but the utility of the feature be "Generally Applicable";
+These features can be added upon request, but the utility of the feature should be "Generally Applicable";
 meaning the feature does not just satisfy an individual use case.
 
 ### No [CSV] output

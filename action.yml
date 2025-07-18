@@ -1,0 +1,47 @@
+name: arduino-report-size-deltas
+description: >-
+  Post a comment on the pull request with a report about
+  the change in memory usage of Arduino sketches.
+author: 2bndy5
+branding:
+  icon: "message-circle"
+  color: "blue"
+inputs:
+  sketches-reports-source:
+    description: |-
+      The path to the folder containing sketches' reports (JSON files).
+    required: false
+    default: sketches-reports
+  token:
+    description: |-
+      The GitHub access token used to post comments on the PR thread.
+      Uses `github.token` by default.
+    default: ${{ github.token }}
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create temp bin directory
+      # this path will be used to store the binaries outside of workspace root
+      shell: bash
+      run: mkdir -p "$GITHUB_ACTION_PATH/bin"
+    - name: Install cargo-binstall
+      env:
+        # Set a custom path to $CARGO_HOME to avoid absence of cargo setup.
+        CARGO_HOME: ${{ env.GITHUB_ACTION_PATH }}
+      # Ultimately, this will add $CARGO_HOME/bin to the $GITHUB_PATH.
+      uses: cargo-bins/cargo-binstall@main
+    - name: Install report-size-deltas binary
+      shell: bash
+      env:
+        STANDALONE_BIN_VER: '0.1.0'
+      run: >-
+        ${GITHUB_ACTION_PATH}/bin/cargo-binstall -y
+        arduino-report-size-deltas@${STANDALONE_BIN_VER}
+        --install-path "${GITHUB_ACTION_PATH}/bin"
+    - shell: bash
+      env:
+        SKETCHES_REPORTS_SOURCE: ${{ inputs.sketches-reports-source }}
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: ${GITHUB_ACTION_PATH}/bin/report-size-deltas

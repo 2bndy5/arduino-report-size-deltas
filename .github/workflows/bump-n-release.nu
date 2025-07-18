@@ -29,14 +29,14 @@
 #    Locally, you can use `gh login` to interactively authenticate the user account.
 
 
-let IN_CI = $env | get --ignore-errors CI | default "false" | ($in == "true")
+let IN_CI = $env | get --ignore-errors CI | default "false" | ($in == "true") or ($in == true)
 
 # Bump the version per the given component name (major, minor, patch)
 def bump-version [
     component: string # the version component to bump
 ] {
     mut args = [--bump $component]
-    if $IN_CI {
+    if (not $IN_CI) {
         $args = $args | append "--dry-run"
     }
     let result = (
@@ -45,6 +45,11 @@ def bump-version [
         | str trim
         | parse "Upgrading {pkg} from {old} to {new}"
         | first
+    )
+    (
+        open action.yml --raw
+        | str replace $"STANDALONE_BIN_VER: '($result | get old)'" $"STANDALONE_BIN_VER: '($result | get new)'"
+        | save --force action.yml
     )
     print $"bumped ($result | get old) to ($result | get new)"
     $result | get new
@@ -113,6 +118,8 @@ def main [component: string] {
         git config --global user.name $"($env.GITHUB_ACTOR)"
         git config --global user.email $"($env.GITHUB_ACTOR_ID)+($env.GITHUB_ACTOR)@users.noreply.github.com"
         git add --all
+        git commit -m $"build: bump version to ($tag)"
+        git push
         print $"Deploying ($tag)"
         deploy-crate
         gh-release $tag
