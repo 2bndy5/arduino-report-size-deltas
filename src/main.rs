@@ -115,17 +115,23 @@ async fn run(args: &[String]) -> Result<()> {
 
     match comment {
         Ok(comment) => {
-            log::info!("Posting comment");
-            client
-                .post_thread_comment(ThreadCommentOptions {
-                    comment,
-                    marker: COMMENT_MARKER.to_string(),
-                    policy: CommentPolicy::Update,
-                    ..Default::default()
-                })
-                .await
-                .with_context(|| "Failed to post comment")?;
-            Ok(())
+            if !client.is_pr_event() {
+                log::info!("Appending to step summary");
+                GithubApiClient::append_step_summary(&comment)?;
+                Ok(())
+            } else {
+                log::info!("Posting comment");
+                client
+                    .post_thread_comment(ThreadCommentOptions {
+                        comment,
+                        marker: COMMENT_MARKER.to_string(),
+                        policy: CommentPolicy::Update,
+                        ..Default::default()
+                    })
+                    .await
+                    .with_context(|| "Failed to post comment")?;
+                Ok(())
+            }
         }
         Err(e) => Err(anyhow!("Failed to assemble comment:, {e}")),
     }
@@ -138,9 +144,12 @@ async fn main() -> Result<()> {
 
 #[cfg(test)]
 mod test {
-    use arduino_report_size_deltas::CommentAssemblyError;
+    use arduino_report_size_deltas::{COMMENT_MARKER, CommentAssemblyError};
     use mockito::{Matcher, Server};
-    use std::{env, fs, io::Write};
+    use std::{
+        env, fs,
+        io::{Read, Write},
+    };
     use tempfile::NamedTempFile;
 
     use crate::run;
@@ -152,11 +161,13 @@ mod test {
     #[derive(Debug, Default)]
     struct TestParams {
         no_report_data: bool,
+        is_not_pr: bool,
     }
 
     async fn setup_test(test_params: TestParams) {
         let mut server = Server::new_async().await;
         let mut event_payload_path = NamedTempFile::new().unwrap();
+        let mut gh_summary_path = NamedTempFile::new().unwrap();
         event_payload_path
             .write_all(format!("{{\"number\": {PR}}}").as_bytes())
             .unwrap();
@@ -166,8 +177,13 @@ mod test {
             env::set_var("GITHUB_REPOSITORY", REPO);
             env::set_var("GITHUB_SHA", "deadbeef");
             env::set_var("GITHUB_TOKEN", TOKEN);
-            env::set_var("GITHUB_EVENT_NAME", "pull_request");
-            env::set_var("GITHUB_EVENT_PATH", event_payload_path.path());
+            if test_params.is_not_pr {
+                env::set_var("GITHUB_EVENT_NAME", "push");
+                env::set_var("GITHUB_STEP_SUMMARY", gh_summary_path.path());
+            } else {
+                env::set_var("GITHUB_EVENT_NAME", "pull_request");
+                env::set_var("GITHUB_EVENT_PATH", event_payload_path.path());
+            }
             env::set_var(
                 "SKETCHES_REPORTS_SOURCE",
                 format!(
@@ -191,6 +207,14 @@ mod test {
                 e.to_string()
                     .contains(&CommentAssemblyError::NotFound.to_string())
             }));
+            return;
+        } else if test_params.is_not_pr {
+            // Nothing is done with REST API.
+            // Should just append to step summary and exit 0.
+            assert!(run(&[]).await.is_ok());
+            let mut summary = String::new();
+            gh_summary_path.read_to_string(&mut summary).unwrap();
+            assert!(summary.contains(COMMENT_MARKER));
             return;
         }
 
@@ -249,6 +273,16 @@ mod test {
     async fn with_no_data() {
         setup_test(TestParams {
             no_report_data: true,
+            ..Default::default()
+        })
+        .await;
+    }
+
+    #[tokio::test]
+    async fn not_a_pr() {
+        setup_test(TestParams {
+            is_not_pr: true,
+            ..Default::default()
         })
         .await;
     }

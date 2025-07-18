@@ -24,10 +24,15 @@ The [original GitHub Action] has some disadvantages:
 
 ## Goals
 
-- [x] Drop-in compatible with the [original GitHub Action]
+- [x] Mostly drop-in compatible with the [original GitHub Action].
+  See [incomplete feature parity](#incomplete-feature-parity) below.
 - [x] Simple enough to accept contributions from the community.
-- [x] Does not require a docker container. Instead this CLI tool is deployed as a standalone binary that can be portably installed.
+- [x] Does not require a docker container.
+  Instead this CLI tool is deployed as a standalone binary that can be portably installed.
 - [x] Data tables in the posted comment are more legible.
+- [x] Support push events in a non-intrusive way:
+  Instead of posting a comment to the commit's diff page, the report/comment is appended to
+  the CI workflow run's summary page.
 
 ### Incomplete feature parity
 
