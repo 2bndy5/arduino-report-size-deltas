@@ -123,6 +123,9 @@ filter_commits = true
 topo_order = false
 # sort the commits inside sections by oldest/newest order
 sort_commits = "oldest"
+# Ignore rolling tags for major and minor versions.
+# Only use tags with full version.
+tag_pattern = "v[0-9]+.[0-9]+.[0-9]+"
 
 [remote.github]
 owner = "2bndy5"
