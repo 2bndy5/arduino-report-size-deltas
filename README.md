@@ -121,7 +121,7 @@ meaning the feature does not just satisfy an individual use case.
 ### No [CSV] output
 
 The [CSV] output used in the [original GitHub Action] is not included in this action's posted comment.
-This is because [CSV] is a machine-readable syntax that is better served via CI artifact(s) (or GitHub's step summary feature).
+This is because [CSV] is a machine-readable syntax that is better served via programmatic means.
 If you need [CSV] output, please submit a feature request so we can discuss the best approach toward integration.
 
 [CSV]: https://en.wikipedia.org/wiki/Comma-separated_values
