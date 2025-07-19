@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        fqbn: [arduino::avr:uno, arduino::samd::mkrzero]
+        fqbn: [arduino::avr::uno, arduino::samd::mkrzero]
     steps:
       - uses: actions/checkout@v4
       - uses: arduino/compile-sketches@v1
@@ -53,6 +53,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           pattern: sketches-reports_*
+          path: sketches-reports
       - name: Report size deltas
         uses: 2bndy5/arduino-report-size-deltas@v0.1.3
 ```
