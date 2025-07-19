@@ -1,0 +1,269 @@
+{
+  "commit_hash": "0f002640a13649c0259c76911737f0f698907b76",
+  "commit_url": "https://github.com/nRF24/RF24Network/commit/0f002640a13649c0259c76911737f0f698907b76",
+  "boards": [
+    {
+      "board": "arduino:avr:nano",
+      "sketches": [
+        {
+          "name": "examples/helloworld_rx",
+          "compilation_success": true,
+          "sizes": [
+            {
+              "name": "flash",
+              "maximum": 30720,
+              "current": {
+                "absolute": 7100,
+                "relative": 23.11
+              },
+              "previous": {
+                "absolute": 7100,
+                "relative": 23.11
+              },
+              "delta": {
+                "absolute": 0,
+                "relative": 0.0
+              }
+            },
+            {
+              "name": "RAM for global variables",
+              "maximum": 2048,
+              "current": {
+                "absolute": 599,
+                "relative": 29.25
+              },
+              "previous": {
+                "absolute": 599,
+                "relative": 29.25
+              },
+              "delta": {
+                "absolute": 0,
+                "relative": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "name": "examples/helloworld_rx_advanced",
+          "compilation_success": true,
+          "sizes": [
+            {
+              "name": "flash",
+              "maximum": 30720,
+              "current": {
+                "absolute": 10824,
+                "relative": 35.23
+              },
+              "previous": {
+                "absolute": 10824,
+                "relative": 35.23
+              },
+              "delta": {
+                "absolute": 0,
+                "relative": 0.0
+              }
+            },
+            {
+              "name": "RAM for global variables",
+              "maximum": 2048,
+              "current": {
+                "absolute": 803,
+                "relative": 39.21
+              },
+              "previous": {
+                "absolute": 803,
+                "relative": 39.21
+              },
+              "delta": {
+                "absolute": 0,
+                "relative": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "name": "examples/helloworld_tx_advanced",
+          "compilation_success": true,
+          "sizes": [
+            {
+              "name": "flash",
+              "maximum": 30720,
+              "current": {
+                "absolute": 11116,
+                "relative": 36.18
+              },
+              "previous": {
+                "absolute": 11116,
+                "relative": 36.18
+              },
+              "delta": {
+                "absolute": 0,
+                "relative": 0.0
+              }
+            },
+            {
+              "name": "RAM for global variables",
+              "maximum": 2048,
+              "current": {
+                "absolute": 768,
+                "relative": 37.5
+              },
+              "previous": {
+                "absolute": 768,
+                "relative": 37.5
+              },
+              "delta": {
+                "absolute": 0,
+                "relative": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "name": "examples/helloworld_tx",
+          "compilation_success": true,
+          "sizes": [
+            {
+              "name": "flash",
+              "maximum": 30720,
+              "current": {
+                "absolute": 7218,
+                "relative": 23.5
+              },
+              "previous": {
+                "absolute": 7218,
+                "relative": 23.5
+              },
+              "delta": {
+                "absolute": 0,
+                "relative": 0.0
+              }
+            },
+            {
+              "name": "RAM for global variables",
+              "maximum": 2048,
+              "current": {
+                "absolute": 609,
+                "relative": 29.74
+              },
+              "previous": {
+                "absolute": 609,
+                "relative": 29.74
+              },
+              "delta": {
+                "absolute": 0,
+                "relative": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "name": "examples/Network_Priority_RX",
+          "compilation_success": true,
+          "sizes": [
+            {
+              "name": "flash",
+              "maximum": 30720,
+              "current": {
+                "absolute": 10998,
+                "relative": 35.8
+              },
+              "previous": {
+                "absolute": 10998,
+                "relative": 35.8
+              },
+              "delta": {
+                "absolute": 0,
+                "relative": 0.0
+              }
+            },
+            {
+              "name": "RAM for global variables",
+              "maximum": 2048,
+              "current": {
+                "absolute": 763,
+                "relative": 37.26
+              },
+              "previous": {
+                "absolute": 763,
+                "relative": 37.26
+              },
+              "delta": {
+                "absolute": 0,
+                "relative": 0.0
+              }
+            }
+          ]
+        },
+        {
+          "name": "examples/Network_Priority_TX",
+          "compilation_success": true,
+          "sizes": [
+            {
+              "name": "flash",
+              "maximum": 30720,
+              "current": {
+                "absolute": 11236,
+                "relative": 36.58
+              },
+              "previous": {
+                "absolute": 11236,
+                "relative": 36.58
+              },
+              "delta": {
+                "absolute": 0,
+                "relative": 0.0
+              }
+            },
+            {
+              "name": "RAM for global variables",
+              "maximum": 2048,
+              "current": {
+                "absolute": 654,
+                "relative": 31.93
+              },
+              "previous": {
+                "absolute": 654,
+                "relative": 31.93
+              },
+              "delta": {
+                "absolute": 0,
+                "relative": 0.0
+              }
+            }
+          ]
+        }
+      ],
+      "sizes": [
+        {
+          "name": "flash",
+          "maximum": 30720,
+          "delta": {
+            "absolute": {
+              "minimum": 0,
+              "maximum": 0
+            },
+            "relative": {
+              "minimum": 0.0,
+              "maximum": 0.0
+            }
+          }
+        },
+        {
+          "name": "RAM for global variables",
+          "maximum": 2048,
+          "delta": {
+            "absolute": {
+              "minimum": 0,
+              "maximum": 0
+            },
+            "relative": {
+              "minimum": 0.0,
+              "maximum": 0.0
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

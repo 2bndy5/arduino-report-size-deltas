@@ -25,23 +25,19 @@ runs:
     - name: Create temp bin directory
       # this path will be used to store the binaries outside of workspace root
       shell: bash
-      run: mkdir -p "$GITHUB_ACTION_PATH/bin"
+      run: mkdir "${GITHUB_ACTION_PATH%/}/bin"
     - name: Install cargo-binstall
-      env:
-        # Set a custom path to $CARGO_HOME to avoid absence of cargo setup.
-        CARGO_HOME: ${{ env.GITHUB_ACTION_PATH }}
-      # Ultimately, this will add $CARGO_HOME/bin to the $GITHUB_PATH.
       uses: cargo-bins/cargo-binstall@main
     - name: Install report-size-deltas binary
       shell: bash
       env:
         STANDALONE_BIN_VER: '0.1.2'
       run: >-
-        ${GITHUB_ACTION_PATH}/bin/cargo-binstall -y
+        cargo-binstall -y
         arduino-report-size-deltas@${STANDALONE_BIN_VER}
-        --install-path "${GITHUB_ACTION_PATH}/bin"
+        --install-path "${GITHUB_ACTION_PATH%/}/bin"
     - shell: bash
       env:
         SKETCHES_REPORTS_SOURCE: ${{ inputs.sketches-reports-source }}
         GITHUB_TOKEN: ${{ inputs.token }}
-      run: ${GITHUB_ACTION_PATH}/bin/report-size-deltas
+      run: ${GITHUB_ACTION_PATH%/}/bin/report-size-deltas

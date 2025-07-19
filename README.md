@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD033 -->
 # Arduino-report-size-deltas
 
 [![rust-ci-badge]][rust-ci-runs] [![codecov-badge]][codecov-link]
@@ -12,6 +13,83 @@ A CLI tool designed for CI workflows that posts comments on a Pull Request about
 This is a port of [`arduino/report-size-deltas` GitHub action][original GitHub Action] from python to rust.
 
 [original GitHub Action]: https://github.com/arduino/report-size-deltas
+
+## Example
+
+The following example workflow will compile sketches, save reports as artifacts, and submit a summarizing comment.
+
+```yml
+name: Get Compile Size
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  compile-sketches:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        fqbn: [arduino::avr:uno, arduino::samd::mkrzero]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: arduino/compile-sketches@v1
+        with:
+          fqbn: ${{ matrix.fqbn }}
+          enable-deltas-report: true
+      - uses: actions/upload-artifact@v4
+        with:
+          path: sketches-reports
+          name: sketches-reports_${{ matrix.fqbn }}
+
+  report-delta-size:
+    needs: [compile-sketches]
+    runs-on: ubuntu-latest
+    permissions:
+      # permission needed to create comments on a Pull Request
+      pull-requests: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: sketches-reports_*
+      - name: Report size deltas
+        uses: 2bndy5/arduino-report-size-deltas
+```
+
+### Triggered by a `pull_request`
+
+When this action is triggered by a `pull_request` event,
+it will post a thread comment summarizing the change in compiled sizes.
+
+In this scenario, the given GitHub token (defaults to `github.token`) needs
+write permission for `pull-requests` (see example above) to post a comment.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="examples/pr-comment-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="examples/pr-comment-light.png">
+  <img alt="(PR comment preview image not rendered)" src="examples/pr-comment-light.png">
+</picture>
+
+Any existing report comment is updated.
+If for some reason, there are multiple report comments found, then
+all report comments except the latest are deleted.
+And only the latest found report comment is updated.
+
+Only comments created by this action are manipulated.
+
+### Triggered by anything except `pull_request`
+
+When this action is **not** triggered by a `pull_request` event,
+it will append the summary comment to the workflow's run summary page.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="examples/step-summary-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="examples/step-summary-light.png">
+  <img alt="(Run summary preview image not rendered)" src="examples/step-summary-light.png">
+</picture>
+
+In this scenario, no special permissions are needed.
 
 ## Why?
 
@@ -43,7 +121,7 @@ meaning the feature does not just satisfy an individual use case.
 ### No [CSV] output
 
 The [CSV] output used in the [original GitHub Action] is not included in this action's posted comment.
-This is because [CSV] is a machine-readable syntax that is better served via CI artifact(s) (or GitHub's step summary feature).
+This is because [CSV] is a machine-readable syntax that is better served via programmatic means.
 If you need [CSV] output, please submit a feature request so we can discuss the best approach toward integration.
 
 [CSV]: https://en.wikipedia.org/wiki/Comma-separated_values

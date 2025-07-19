@@ -28,9 +28,9 @@ pub struct Report {
 impl Report {
     /// Ensure all needed data is present.
     ///
-    /// [`parse_json()`][fn@crate::parse_json] supports parsing of old/outdated JSON formats
-    /// previously produced by the `arduino/compile-sketches` action. Use this function to
-    /// ensure enough data is present to form a [`Report`].
+    /// [`parse_artifacts()`][fn@crate::parse_artifacts] supports parsing of
+    /// old/outdated JSON formats previously produced by the `arduino/compile-sketches`
+    /// action. Use this function to ensure enough data is present to form a [`Report`].
     pub fn is_valid(&self) -> bool {
         if self.boards.is_empty() {
             return false;
@@ -39,7 +39,7 @@ impl Report {
             if board.sizes.is_none() || board.sizes.as_ref().is_some_and(|v| v.is_empty()) {
                 return false;
             }
-            // unwrap is ok due to check above
+            // unwrap() yields Some value because of the check above
             for size in board.sizes.as_ref().unwrap() {
                 if !size.has_maximum() {
                     return false;
