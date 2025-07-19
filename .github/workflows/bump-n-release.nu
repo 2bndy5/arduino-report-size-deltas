@@ -32,6 +32,9 @@
 let IN_CI = $env | get --ignore-errors CI | default "false" | ($in == "true") or ($in == true)
 
 # Bump the version per the given component name (major, minor, patch)
+#
+# This function also updates known occurrences of the old version spec to
+# the new version spec in various places (like README.md and action.yml).
 def bump-version [
     component: string # the version component to bump
 ] {
@@ -46,12 +49,20 @@ def bump-version [
         | parse "Upgrading {pkg} from {old} to {new}"
         | first
     )
+    print $"bumped ($result | get old) to ($result | get new)"
+    # update the version in various places
     (
         open action.yml --raw
         | str replace $"STANDALONE_BIN_VER: '($result | get old)'" $"STANDALONE_BIN_VER: '($result | get new)'"
         | save --force action.yml
     )
-    print $"bumped ($result | get old) to ($result | get new)"
+    print "Updated action.yml"
+    (
+        open README.md
+        | str replace $"arduino-report-size-deltas@v($result | get old)" $"arduino-report-size-deltas@v($result | get new)"
+        | save --force README.md
+    )
+    print "Updated README.md"
     $result | get new
 }
 
@@ -104,7 +115,16 @@ def gh-release [tag: string] {
     ^gh release create $tag --notes-file ".config/ReleaseNotes.md"
 }
 
-
+# The main function of this script.
+#
+# The `component` parameter is a required CLI option:
+#     nu .github/workflows/bump-n-release.nu patch
+#
+# The acceptable `component` values are what `cargo set-version` accepts:
+#
+# - manor
+# - minor
+# - patch
 def main [component: string] {
     let ver = bump-version $component
     let tag = $"v($ver)"
