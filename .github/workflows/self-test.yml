@@ -16,7 +16,7 @@ jobs:
           path: tests/test_assets/**/*.json
           name: sketch-reports
 
-  run-action:
+  report-size-deltas:
     needs: [create-assets]
     runs-on: ubuntu-latest
     permissions:

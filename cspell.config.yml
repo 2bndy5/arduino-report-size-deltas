@@ -28,6 +28,7 @@ words:
   - rustup
   - samd
   - serde
+  - srcset
   - startswith
   - thiserror
   - timeit
