@@ -6,11 +6,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [1.0.0] - 2025-07-20
+
+### <!-- 8 --> 📝 Documentation
+
+- Update README by @2bndy5 in [`2d61316`](https://github.com/2bndy5/arduino-report-size-deltas/commit/2d6131609c51512d3044aa1e62b24abfa0582442)
+- Update example in README by @2bndy5 in [`1ce4ca3`](https://github.com/2bndy5/arduino-report-size-deltas/commit/1ce4ca37ba0e755dacffd4e9933c3d6b9dc86bcb)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Prepare to use rolling tags by @2bndy5 in [#4](https://github.com/2bndy5/arduino-report-size-deltas/pull/4)
+
+[1.0.0]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v0.1.3...v1.0.0
+
+Full commit diff: [`v0.1.3...v1.0.0`][1.0.0]
+
 ## [0.1.3] - 2025-07-19
 
 ### <!-- 1 --> 🚀 Added
 
 - Recurse sketches' path by @2bndy5 in [#3](https://github.com/2bndy5/arduino-report-size-deltas/pull/3)
+
+### <!-- 6 --> 📦 Dependency updates
+
+- Bump version to v0.1.3 by @2bndy5 in [`5ebd38a`](https://github.com/2bndy5/arduino-report-size-deltas/commit/5ebd38a1d86c094e9713cba0f7ca647eb13b316a)
 
 [0.1.3]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v0.1.2...v0.1.3
 
