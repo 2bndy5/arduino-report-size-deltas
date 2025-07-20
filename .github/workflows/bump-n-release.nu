@@ -153,8 +153,9 @@ def main [component: string] {
         git config --global user.email $"($env.GITHUB_ACTOR_ID)+($env.GITHUB_ACTOR)@users.noreply.github.com"
         git add --all
         git commit -m $"build: bump version to ($tag)"
+        git push
         mv-rolling-tags $ver
-        git push --follow-tags
+        git push --tags
         print "Publishing crate"
         deploy-crate
         print $"Deploying ($tag)"
