@@ -6,7 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [1.0.1] - 2025-07-20
+
+### <!-- 9 --> 🗨️ Changed
+
+- Manage tags properly in bump-n-release CI by @2bndy5 in [`2e5bc66`](https://github.com/2bndy5/arduino-report-size-deltas/commit/2e5bc660cd6dca26b9250035d9244d9c3466ee39)
+
+[1.0.1]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v1.0.0...v1.0.1
+
+Full commit diff: [`v1.0.0...v1.0.1`][1.0.1]
+
 ## [1.0.0] - 2025-07-20
+
+### <!-- 6 --> 📦 Dependency updates
+
+- Bump version to v1.0.0 by @2bndy5 in [`ff9026a`](https://github.com/2bndy5/arduino-report-size-deltas/commit/ff9026aca862006ae881eb353beabaf0236ba9fb)
 
 ### <!-- 8 --> 📝 Documentation
 
@@ -16,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### <!-- 9 --> 🗨️ Changed
 
 - Prepare to use rolling tags by @2bndy5 in [#4](https://github.com/2bndy5/arduino-report-size-deltas/pull/4)
+- Correct CI trigger for tags by @2bndy5 in [`ae8afd6`](https://github.com/2bndy5/arduino-report-size-deltas/commit/ae8afd646c40ece3140dea56d760c77a936fcc62)
 
 [1.0.0]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v0.1.3...v1.0.0
 
