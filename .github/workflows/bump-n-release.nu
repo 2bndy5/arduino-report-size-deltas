@@ -88,6 +88,20 @@ def gen-changes [
     print ($prompt | format pattern "{log_prefix} {out_path}")
 }
 
+# Move applicable rolling tags to the checked out HEAD.
+#
+# For example, `v1` and `v1.2` are moved to the newer `v1.2.3` ref.
+def mv-rolling-tags [
+    ver: string # The fully qualified version of the new tag (without `v` prefixed).
+] {
+    let tag = $ver | parse "{major}.{minor}.{patch}" | first
+    let major_tag = $"v($tag | get major)"
+    let minor_tag = $"v($tag | get major).($tag | get minor)"
+    ^git tag --force $major_tag
+    ^git tag --force $minor_tag
+    print $"Adjusted tags ($major_tag) and ($minor_tag)"
+}
+
 # Is the the default branch currently checked out?
 def is-on-main [] {
     let branch = (
@@ -139,9 +153,11 @@ def main [component: string] {
         git config --global user.email $"($env.GITHUB_ACTOR_ID)+($env.GITHUB_ACTOR)@users.noreply.github.com"
         git add --all
         git commit -m $"build: bump version to ($tag)"
-        git push
-        print $"Deploying ($tag)"
+        mv-rolling-tags $ver
+        git push --follow-tags
+        print "Publishing crate"
         deploy-crate
+        print $"Deploying ($tag)"
         gh-release $tag
     } else if $is_main {
         print $"(ansi yellow)Not deploying from local clone.(ansi reset)"
