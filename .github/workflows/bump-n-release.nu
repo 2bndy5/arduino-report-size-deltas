@@ -94,12 +94,21 @@ def gen-changes [
 def mv-rolling-tags [
     ver: string # The fully qualified version of the new tag (without `v` prefixed).
 ] {
+    let tags = ^git tag --list | lines
     let tag = $ver | parse "{major}.{minor}.{patch}" | first
     let major_tag = $"v($tag | get major)"
     let minor_tag = $"v($tag | get major).($tag | get minor)"
-    ^git tag --force $major_tag
-    ^git tag --force $minor_tag
-    print $"Adjusted tags ($major_tag) and ($minor_tag)"
+    for t in [$major_tag, $minor_tag] {
+        if ($t in $tags) {
+            # delete local tag
+            git tag -d $t
+            # delete remote tags
+            git push origin $":refs/tags/($t)"
+        }
+        git tag $t
+        git push origin $t
+        print $"Adjusted tags ($t)"
+    }
 }
 
 # Is the the default branch currently checked out?
@@ -155,7 +164,6 @@ def main [component: string] {
         git commit -m $"build: bump version to ($tag)"
         git push
         mv-rolling-tags $ver
-        git push --tags
         print "Publishing crate"
         deploy-crate
         print $"Deploying ($tag)"
