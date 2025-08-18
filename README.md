@@ -14,6 +14,21 @@ This is a port of [`arduino/report-size-deltas` GitHub action][original GitHub A
 
 [original GitHub Action]: https://github.com/arduino/report-size-deltas
 
+## Inputs
+
+### `sketches-reports-source`
+
+The path to the folder containing sketches' reports (JSON files).
+
+The default value is `"sketches-reports"` when not specified.
+
+### `token`
+
+The GitHub access token used to post comments on the Pull Request thread.
+Uses `github.token` by default.
+
+This is only used for Pull Request events.
+
 ## Example
 
 The following example workflow will compile sketches, save reports as artifacts, and submit a summarizing comment.
@@ -63,7 +78,7 @@ jobs:
 When this action is triggered by a `pull_request` event,
 it will post a thread comment summarizing the change in compiled sizes.
 
-In this scenario, the given GitHub token (defaults to `github.token`) needs
+In this scenario, the given [GitHub `token`](#token) needs
 write permission for `pull-requests` (see example above) to post a comment.
 
 <picture>
@@ -152,7 +167,7 @@ is beneficial to the Arduino Community at large, not just beneficial to the
 
 #### Problematic
 
-Steps 2 and 3 could easily lock out the given token's read/write access by surpassing the
+Steps 2 and 3 could easily lock out the [given `token`](#token)'s read/write access by surpassing the
 GitHub REST API's rate limits.
 
 Additionally, force pushed commits on a feature branch can cause some workflow runs to
