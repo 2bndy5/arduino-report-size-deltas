@@ -36,6 +36,7 @@ runs:
         cargo-binstall -y
         arduino-report-size-deltas@${STANDALONE_BIN_VER}
         --install-path "${GITHUB_ACTION_PATH%/}/bin"
+        --locked
     - shell: bash
       env:
         SKETCHES_REPORTS_SOURCE: ${{ inputs.sketches-reports-source }}
