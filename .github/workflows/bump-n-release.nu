@@ -29,7 +29,7 @@
 #    Locally, you can use `gh login` to interactively authenticate the user account.
 
 
-let IN_CI = $env | get --ignore-errors CI | default "false" | ($in == "true") or ($in == true)
+let IN_CI = $env | get --optional CI | default "false" | ($in == "true") or ($in == true)
 
 # Bump the version per the given component name (major, minor, patch)
 #
