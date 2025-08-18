@@ -32,6 +32,7 @@ runs:
       shell: bash
       env:
         STANDALONE_BIN_VER: '1.0.1'
+        GITHUB_TOKEN: ${{ github.token }}
       run: >-
         cargo-binstall -y
         arduino-report-size-deltas@${STANDALONE_BIN_VER}
