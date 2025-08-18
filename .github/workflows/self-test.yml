@@ -9,7 +9,7 @@ jobs:
   create-assets:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Upload test report artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -22,9 +22,9 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: sketch-reports
           path: sketches-reports

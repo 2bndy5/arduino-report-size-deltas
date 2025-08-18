@@ -27,7 +27,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup Rust
         run: rustup update --no-self-update
       - name: Install cargo-binstall
@@ -124,7 +124,7 @@ jobs:
             cross: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Rust
         run: |-
@@ -163,13 +163,13 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - name: Install Rust
         run: rustup update stable --no-self-update
       - name: Download built assets
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: report-size-deltas-*
           path: dist
