@@ -31,7 +31,7 @@ runs:
     - name: Install report-size-deltas binary
       shell: bash
       env:
-        STANDALONE_BIN_VER: '1.0.1'
+        STANDALONE_BIN_VER: '1.0.2'
         GITHUB_TOKEN: ${{ github.token }}
       run: >-
         cargo-binstall -y

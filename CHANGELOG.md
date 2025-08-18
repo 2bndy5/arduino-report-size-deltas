@@ -6,6 +6,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [1.0.2] - 2025-08-18
+
+### <!-- 4 --> 🛠️ Fixed
+
+- Allow compiling from source by @2bndy5 in [`b5e9f1c`](https://github.com/2bndy5/arduino-report-size-deltas/commit/b5e9f1c4f04469013820f2b9035632422f2c6739)
+- Avoid REST API rate limits by @2bndy5 in [`0fb9491`](https://github.com/2bndy5/arduino-report-size-deltas/commit/0fb949197147443acf4b6314b6e46d3420d43532)
+
+### <!-- 6 --> 📦 Dependency updates
+
+- Bump the actions group across 1 directory with 2 updates by @dependabot[bot] in [#9](https://github.com/2bndy5/arduino-report-size-deltas/pull/9)
+- Bump slab from 0.4.10 to 0.4.11 by @dependabot[bot] in [#8](https://github.com/2bndy5/arduino-report-size-deltas/pull/8)
+- Bump the cargo group with 7 updates by @dependabot[bot] in [#12](https://github.com/2bndy5/arduino-report-size-deltas/pull/12)
+
+### <!-- 8 --> 📝 Documentation
+
+- Describe action inputs in README by @2bndy5 in [`6856621`](https://github.com/2bndy5/arduino-report-size-deltas/commit/68566214063ea9b9622f36f82dc90b6aa9bb4711)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Regenerate CHANGELOG by @2bndy5 in [`086b60b`](https://github.com/2bndy5/arduino-report-size-deltas/commit/086b60b829a89b8c496b5867ddf131bb62de6192)
+- Replace deprecated nushell syntax by @2bndy5 in [`87e5fea`](https://github.com/2bndy5/arduino-report-size-deltas/commit/87e5fea1d7f023c34bbb031114ce14f0fe9ac0dc)
+
+[1.0.2]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v1.0.1...v1.0.2
+
+Full commit diff: [`v1.0.1...v1.0.2`][1.0.2]
+
+## New Contributors
+
+- @dependabot[bot] made their first contribution in [#12](https://github.com/2bndy5/arduino-report-size-deltas/pull/12)
+
 ## [1.0.1] - 2025-07-20
 
 ### <!-- 6 --> 📦 Dependency updates
