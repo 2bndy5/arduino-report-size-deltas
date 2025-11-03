@@ -14,7 +14,7 @@ required-features = ["bin"]
 
 [dependencies]
 anyhow = { version = "1.0.100", optional = true }
-clap = { version = "4.5.50", optional = true, features = ["derive", "env"] }
+clap = { version = "4.5.51", optional = true, features = ["derive", "env"] }
 colored = { version = "3.0.0", optional = true }
 git-bot-feedback = { version = "0.2.0", optional = true }
 log = "0.4.27"
