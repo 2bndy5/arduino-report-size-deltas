@@ -24,6 +24,7 @@ words:
   - orhun
   - pipx
   - portenta
+  - pwsh
   - reqwest
   - rustup
   - samd
