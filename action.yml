@@ -27,7 +27,7 @@ runs:
       shell: bash
       run: mkdir "${GITHUB_ACTION_PATH%/}/bin"
     - name: Install cargo-binstall
-      uses: cargo-bins/cargo-binstall@main
+      uses: cargo-bins/cargo-binstall@ae04fb5e853ae6cd3ad7de4a1d554a8b646d12aa # v1.15.11
     - name: Install report-size-deltas binary
       shell: bash
       env:

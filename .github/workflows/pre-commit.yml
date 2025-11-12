@@ -6,12 +6,16 @@ on:
   pull_request:
     branches: [main]
 
+permissions: {}
+
 jobs:
   all-files:
     # also lints python files
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v6
         id: python-setup
         with:
@@ -27,6 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - name: Setup Rust
         run: rustup update --no-self-update
       - name: Cache deps
@@ -37,17 +43,62 @@ jobs:
       - run: cargo clippy
       - run: cargo fmt --check
 
-  conventional-commit:
+  check-pr-title:
+    name: Check PR title
     if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - run: rustup update --no-self-update
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@ae04fb5e853ae6cd3ad7de4a1d554a8b646d12aa # v1.15.11
+      - name: Install committed
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: cargo binstall -y committed
+      - name: Get PR title
+        id: get-title
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |-
+          pr_title=$(gh pr view "${PR_NUMBER}" --repo "${GH_REPO}" --json "title" -q ".title")
+          echo "title=${pr_title}" >> "${GITHUB_OUTPUT}"
+      - name: conventional-commit
+        env:
+          PR_TITLE: "${{ steps.get-title.outputs.title }}"
+          COMMITTED_CONFIG: .config/committed.toml
+        run: echo "${PR_TITLE}" | committed --config "${COMMITTED_CONFIG}" --commit-file -
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: latest
+      - name: spell check
+        env:
+          PR_TITLE: "${{ steps.get-title.outputs.title }}"
+        run: echo "${PR_TITLE}" | npx cspell-cli lint stdin
+
+  lint-ci-workflows:
+    name: Lint CI Workflows
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - run: rustup update --no-self-update
-      - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@main
-      - name: Install committed
-        run: cargo binstall -y committed
-      - name: Check PR title
+        with:
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+      - name: Lint GitHub Workflows
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: >-
-          echo "${{ github.event.pull_request.title }}"
-          | committed --config .config/committed.toml --commit-file -
+          pipx run
+          zizmor
+          --format github
+          ./

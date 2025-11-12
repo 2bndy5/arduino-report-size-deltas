@@ -124,13 +124,6 @@ def is-on-main [] {
     $branch
 }
 
-# Publish this package to crates.io
-#
-# This requires a token in $env.CARGO_REGISTRY_TOKEN for authentication.
-def deploy-crate [] {
-    ^cargo publish
-}
-
 # Publish a GitHub Release for the given tag.
 #
 # This requires a token in $env.GITHUB_TOKEN for authentication.
@@ -164,8 +157,6 @@ def main [component: string] {
         git commit -m $"build: bump version to ($tag)"
         git push
         mv-rolling-tags $ver
-        print "Publishing crate"
-        deploy-crate
         print $"Deploying ($tag)"
         gh-release $tag
     } else if $is_main {
