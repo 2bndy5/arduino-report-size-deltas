@@ -167,7 +167,7 @@ jobs:
           tar -a -c -v -f "${arc_name}" ${tgt} LICENSE
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: report-size-deltas-${{ matrix.target }}
           path: report-size-deltas-${{ matrix.target }}*
@@ -186,7 +186,7 @@ jobs:
       - name: Install Rust
         run: rustup update stable --no-self-update
       - name: Download built assets
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           pattern: report-size-deltas-*
           path: dist
