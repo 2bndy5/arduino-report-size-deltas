@@ -26,8 +26,20 @@ runs:
       # this path will be used to store the binaries outside of workspace root
       shell: bash
       run: mkdir "${GITHUB_ACTION_PATH%/}/bin"
-    - name: Install cargo-binstall
-      uses: cargo-bins/cargo-binstall@ae04fb5e853ae6cd3ad7de4a1d554a8b646d12aa # v1.15.11
+    - name: Install cargo-binstall (unix)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: >-
+        curl -L --proto '=https' --tlsv1.2 -sSf
+        https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh
+        | bash
+    - name: Install cargo-binstall (windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: >-
+        Set-ExecutionPolicy Unrestricted
+        -Scope Process; iex
+        (iwr "https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.ps1").Content
     - name: Install report-size-deltas binary
       shell: bash
       env:

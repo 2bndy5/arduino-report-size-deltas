@@ -36,7 +36,8 @@ jobs:
       - name: Install cargo-llvm-cov, cargo-nextest, and nur
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: cargo binstall -y cargo-nextest cargo-llvm-cov nur
+          NUR_VERSION: ${{ vars.NUR_VERSION }}
+        run: cargo binstall -y cargo-nextest cargo-llvm-cov nur@${NUR_VERSION}
       - name: Cache deps
         uses: actions/cache@v4 # zizmor: ignore[cache-poisoning]
         with:

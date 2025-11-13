@@ -14,6 +14,9 @@ This is a port of [`arduino/report-size-deltas` GitHub action][original GitHub A
 
 [original GitHub Action]: https://github.com/arduino/report-size-deltas
 
+> [!NOTE]
+> On Linux runners, especially when using a `container`, `curl` is required to download the executable binaries used by this action.
+
 ## Inputs
 
 ### `sketches-reports-source`

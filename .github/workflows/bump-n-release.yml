@@ -41,9 +41,10 @@ jobs:
           persist-credentials: true # need for `git push`
 
       - uses: cargo-bins/cargo-binstall@ae04fb5e853ae6cd3ad7de4a1d554a8b646d12aa # v1.15.11
-      - run: cargo binstall -y git-cliff nu
+      - run: cargo binstall -y git-cliff nu@${NUSHELL_VERSION}
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          NUSHELL_VERSION: ${{ vars.NUSHELL_VERSION }}
       - name: Install cargo-edit
         run: >-
           cargo install
@@ -73,11 +74,13 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '3.x'
+      - name: setup uv
+        uses: astral-sh/setup-uv@v7
       - name: Generate a changelog
         env:
           GITHUB_REPO: ${{ github.repository }}
         run: >-
-         pipx run
+         uvx --constraints .github/requirements.txt
          git-cliff
          --unreleased
          --config .config/cliff.toml
