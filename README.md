@@ -147,7 +147,7 @@ If you need [CSV] output, please submit a feature request so we can discuss the 
 
 [CSV]: https://en.wikipedia.org/wiki/Comma-separated_values
 
-### No support for scheduled CI trigger
+### No special support for scheduled CI trigger
 
 [schedule]: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#schedule
 
