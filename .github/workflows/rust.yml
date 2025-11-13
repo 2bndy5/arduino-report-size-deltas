@@ -211,5 +211,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |-
-          files=$(ls dist)
-          ^gh release upload "${GITHUB_REF_NAME}" ${files}
+          files=$(ls dist/report-size-deltas*)
+          gh release upload "${GITHUB_REF_NAME}" ${files}
