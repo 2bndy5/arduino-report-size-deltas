@@ -38,10 +38,10 @@ jobs:
           token: ${{ secrets.BUMP_N_RELEASE }}
           fetch-depth: 0
           fetch-tags: true
-          persist-credentials: true # need for `git push`
+          persist-credentials: true # needed for `git push`
 
       - uses: cargo-bins/cargo-binstall@ae04fb5e853ae6cd3ad7de4a1d554a8b646d12aa # v1.15.11
-      - run: cargo binstall -y git-cliff nu@${NUSHELL_VERSION}
+      - run: cargo binstall -y nu@${NUSHELL_VERSION}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           NUSHELL_VERSION: ${{ vars.NUSHELL_VERSION }}
@@ -52,6 +52,12 @@ jobs:
           --no-default-features
           --features set-version
           cargo-edit
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+      - name: Install git-cliff
+        run: pip install -r .github/requirements.txt
 
       - name: Bump ${{ inputs.component }} version
         env:
