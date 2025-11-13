@@ -1,6 +1,6 @@
 [package]
 name = "arduino-report-size-deltas"
-version = "1.0.3"
+version = "1.0.4"
 description = "Post a comment on the pull request with a report about the change in memory usage of Arduino sketches"
 edition = "2024"
 license = "GPL-3.0-or-later"

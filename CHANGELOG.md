@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [1.0.4] - 2025-11-13
+
+### <!-- 9 --> 🗨️ Changed
+
+- Fix release asset upload step in CI by @2bndy5 in [`6f68f16`](https://github.com/2bndy5/arduino-report-size-deltas/commit/6f68f16d26ff215f441ab82ad147ad131dc029a9)
+
+[1.0.4]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v1.0.3...v1.0.4
+
+Full commit diff: [`v1.0.3...v1.0.4`][1.0.4]
+
 ## [1.0.3] - 2025-11-13
 
 ### <!-- 6 --> 📦 Dependency updates
@@ -14,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump the cargo group across 1 directory with 10 updates by @dependabot[bot] in [#20](https://github.com/2bndy5/arduino-report-size-deltas/pull/20)
 - Bump clap from 4.5.50 to 4.5.51 in the cargo group by @dependabot[bot] in [#22](https://github.com/2bndy5/arduino-report-size-deltas/pull/22)
 - Bump the actions group with 2 updates by @dependabot[bot] in [#21](https://github.com/2bndy5/arduino-report-size-deltas/pull/21)
+- Bump version to v1.0.3 by @2bndy5 in [`d92c6d5`](https://github.com/2bndy5/arduino-report-size-deltas/commit/d92c6d5f7ade374f128f3ef9158c944a2d526263)
 
 ### <!-- 9 --> 🗨️ Changed
 
