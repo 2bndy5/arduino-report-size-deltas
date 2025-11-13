@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [1.0.3] - 2025-11-13
+
+### <!-- 6 --> 📦 Dependency updates
+
+- Bump actions/setup-python from 5 to 6 in the actions group by @dependabot[bot] in [#15](https://github.com/2bndy5/arduino-report-size-deltas/pull/15)
+- Bump the cargo group across 1 directory with 10 updates by @dependabot[bot] in [#20](https://github.com/2bndy5/arduino-report-size-deltas/pull/20)
+- Bump clap from 4.5.50 to 4.5.51 in the cargo group by @dependabot[bot] in [#22](https://github.com/2bndy5/arduino-report-size-deltas/pull/22)
+- Bump the actions group with 2 updates by @dependabot[bot] in [#21](https://github.com/2bndy5/arduino-report-size-deltas/pull/21)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Use proper compressed binaries as release assets by @2bndy5 in [#23](https://github.com/2bndy5/arduino-report-size-deltas/pull/23)
+- Secure CI workflows by @2bndy5 in [#24](https://github.com/2bndy5/arduino-report-size-deltas/pull/24)
+
+[1.0.3]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v1.0.2...v1.0.3
+
+Full commit diff: [`v1.0.2...v1.0.3`][1.0.3]
+
 ## [1.0.2] - 2025-08-18
 
 ### <!-- 4 --> 🛠️ Fixed
@@ -18,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump the actions group across 1 directory with 2 updates by @dependabot[bot] in [#9](https://github.com/2bndy5/arduino-report-size-deltas/pull/9)
 - Bump slab from 0.4.10 to 0.4.11 by @dependabot[bot] in [#8](https://github.com/2bndy5/arduino-report-size-deltas/pull/8)
 - Bump the cargo group with 7 updates by @dependabot[bot] in [#12](https://github.com/2bndy5/arduino-report-size-deltas/pull/12)
+- Bump version to v1.0.2 by @2bndy5 in [`fd951b0`](https://github.com/2bndy5/arduino-report-size-deltas/commit/fd951b066dea4220c0392c3b2c67ea8fd28980d8)
 
 ### <!-- 8 --> 📝 Documentation
 
