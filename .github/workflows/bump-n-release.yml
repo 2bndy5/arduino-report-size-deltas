@@ -21,46 +21,73 @@ on:
           - minor
           - patch
 
+permissions: {}
+
 jobs:
   bump-release:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    # permissions required by BUMP_N_RELEASE token:
+    #   # for creating a GitHub release and pushing metadata changes
+    #   contents: write
+    #   # for generating CHANGELOG entries using PR history
+    #   pull-requests: read
     steps:
       - uses: actions/checkout@v5
         with:
           token: ${{ secrets.BUMP_N_RELEASE }}
           fetch-depth: 0
           fetch-tags: true
+          persist-credentials: true # needed for `git push`
 
-      - name: Setup nushell
-        uses: hustcer/setup-nu@v3
+      - uses: cargo-bins/cargo-binstall@ae04fb5e853ae6cd3ad7de4a1d554a8b646d12aa # v1.15.11
+      - run: cargo binstall -y nu@${NUSHELL_VERSION}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NUSHELL_VERSION: ${{ vars.NUSHELL_VERSION }}
+      - name: Install cargo-edit
+        run: >-
+          cargo install
+          --locked
+          --no-default-features
+          --features set-version
+          cargo-edit
+      - name: Setup Python
+        uses: actions/setup-python@v6
         with:
-          version: "*"
-
-      - uses: cargo-bins/cargo-binstall@main
-      - run: cargo binstall -y git-cliff cargo-edit
+          python-version: '3.x'
+      - name: Install git-cliff
+        run: pip install -r .github/requirements.txt
 
       - name: Bump ${{ inputs.component }} version
         env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.BUMP_N_RELEASE }}
         run: nu .github/workflows/bump-n-release.nu ${{ inputs.component }}
 
   update-changelog:
     if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
           fetch-tags: true
-      - name: Generate a changelog
-        uses: orhun/git-cliff-action@v4
-        id: git-cliff
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v6
         with:
-          config: .config/cliff.toml
-          args: --unreleased
+          python-version: '3.x'
+      - name: setup uv
+        uses: astral-sh/setup-uv@5a7eac68fb9809dea845d802897dc5c723910fa3 # v7.1.3
+      - name: Generate a changelog
         env:
-          OUTPUT: ${{ runner.temp }}/changes.md
           GITHUB_REPO: ${{ github.repository }}
-      - run: cat "${{ runner.temp }}/changes.md" >> "$GITHUB_STEP_SUMMARY"
+        run: >-
+         uvx --constraints .github/requirements.txt
+         git-cliff
+         --unreleased
+         --config .config/cliff.toml
+         --output "$GITHUB_STEP_SUMMARY"

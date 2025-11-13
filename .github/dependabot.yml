@@ -9,6 +9,8 @@ updates:
     directory: /
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 5
     groups:
       actions:
         patterns:
@@ -17,7 +19,19 @@ updates:
     directory: /
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 5
     groups:
       cargo:
+        patterns:
+          - "*"
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 5
+    groups:
+      pip:
         patterns:
           - "*"

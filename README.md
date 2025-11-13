@@ -12,7 +12,12 @@ A CLI tool designed for CI workflows that posts comments on a Pull Request about
 
 This is a port of [`arduino/report-size-deltas` GitHub action][original GitHub Action] from python to rust.
 
+> [!NOTE]
+> On Linux runners, especially when using a [`container`][jobs-container],
+> `curl` is required to download the executable binaries used by this action.
+
 [original GitHub Action]: https://github.com/arduino/report-size-deltas
+[jobs-container]: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idcontainer
 
 ## Inputs
 
@@ -142,7 +147,7 @@ If you need [CSV] output, please submit a feature request so we can discuss the 
 
 [CSV]: https://en.wikipedia.org/wiki/Comma-separated_values
 
-### No support for scheduled CI trigger
+### No special support for scheduled CI trigger
 
 [schedule]: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#schedule
 

@@ -6,6 +6,7 @@ words:
   - bndy
   - chrono
   - clippy
+  - cooldown
   - endfor
   - endgroup
   - endmacro
@@ -33,7 +34,9 @@ words:
   - startswith
   - thiserror
   - timeit
+  - tlsv
   - topo
+  - zizmor
 ignorePaths:
   - .gitattributes
   - .gitignore
