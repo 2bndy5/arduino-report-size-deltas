@@ -26,7 +26,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Setup Rust
@@ -39,7 +39,7 @@ jobs:
           NUR_VERSION: ${{ vars.NUR_VERSION }}
         run: cargo binstall -y cargo-nextest cargo-llvm-cov nur@${NUR_VERSION}
       - name: Cache deps
-        uses: actions/cache@v4 # zizmor: ignore[cache-poisoning]
+        uses: actions/cache@v5 # zizmor: ignore[cache-poisoning]
         with:
           path: ~/.cargo
           key: cargo-lib-${{ hashFiles('src/**', 'Cargo.toml', 'Cargo.lock') }}
@@ -49,7 +49,7 @@ jobs:
         run: nur test --profile ci
       - name: Generate coverage reports
         run: nur test lcov
-      - uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+      - uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: lcov.info
@@ -124,7 +124,7 @@ jobs:
             cross: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
 
@@ -171,7 +171,7 @@ jobs:
           tar -a -c -v -f "${arc_name}" ${tgt} LICENSE
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: report-size-deltas-${{ matrix.target }}
           path: report-size-deltas-${{ matrix.target }}*
@@ -187,7 +187,7 @@ jobs:
       # needed to upload release-assets
       contents: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Install Rust
@@ -202,7 +202,7 @@ jobs:
         run: cargo publish
 
       - name: Download built assets
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           pattern: report-size-deltas-*
           path: dist
