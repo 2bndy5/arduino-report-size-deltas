@@ -26,13 +26,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Setup Rust
         run: rustup update --no-self-update
       - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@ae04fb5e853ae6cd3ad7de4a1d554a8b646d12aa # v1.15.11
+        uses: cargo-bins/cargo-binstall@80aaafe04903087c333980fa2686259ddd34b2d9 # v1.16.6
       - name: Install cargo-llvm-cov, cargo-nextest, and nur
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -49,7 +49,7 @@ jobs:
         run: nur test --profile ci
       - name: Generate coverage reports
         run: nur test lcov
-      - uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+      - uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: lcov.info
@@ -124,7 +124,7 @@ jobs:
             cross: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
 
@@ -135,7 +135,7 @@ jobs:
 
       - name: Install cargo-binstall
         if: matrix.cross
-        uses: cargo-bins/cargo-binstall@ae04fb5e853ae6cd3ad7de4a1d554a8b646d12aa # v1.15.11
+        uses: cargo-bins/cargo-binstall@80aaafe04903087c333980fa2686259ddd34b2d9 # v1.16.6
       - name: Install cross (cargo cross compiler)
         if: matrix.cross
         env:
@@ -171,7 +171,7 @@ jobs:
           tar -a -c -v -f "${arc_name}" ${tgt} LICENSE
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: report-size-deltas-${{ matrix.target }}
           path: report-size-deltas-${{ matrix.target }}*
@@ -187,7 +187,7 @@ jobs:
       # needed to upload release-assets
       contents: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Install Rust
@@ -202,7 +202,7 @@ jobs:
         run: cargo publish
 
       - name: Download built assets
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           pattern: report-size-deltas-*
           path: dist
