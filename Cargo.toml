@@ -14,15 +14,15 @@ required-features = ["bin"]
 
 [dependencies]
 anyhow = { version = "1.0.100", optional = true }
-clap = { version = "4.5.51", optional = true, features = ["derive", "env"] }
-colored = { version = "3.0.0", optional = true }
+clap = { version = "4.5.54", optional = true, features = ["derive", "env"] }
+colored = { version = "3.1.1", optional = true }
 git-bot-feedback = { version = "0.2.0", optional = true }
-log = "0.4.27"
-reqwest = { version = "0.12.22", optional = true, features = ["native-tls-vendored"] }
+log = "0.4.29"
+reqwest = { version = "0.13.1", optional = true, features = ["native-tls-vendored"] }
 serde = { version = "1", features = ["derive"] }
-serde_json = "1.0.142"
-thiserror = "2.0.12"
-tokio = { version = "1.46.1", optional = true, features = ["macros", "rt-multi-thread"] }
+serde_json = "1.0.149"
+thiserror = "2.0.18"
+tokio = { version = "1.49.0", optional = true, features = ["macros", "rt-multi-thread"] }
 
 [features]
 bin = ["dep:anyhow", "dep:clap", "dep:git-bot-feedback", "dep:colored", "dep:tokio"]
@@ -30,5 +30,5 @@ native-tls-vendored = ["dep:reqwest"]
 default = []
 
 [dev-dependencies]
-mockito = "1.7.0"
-tempfile = "3.23.0"
+mockito = "1.7.1"
+tempfile = "3.24.0"
