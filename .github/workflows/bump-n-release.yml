@@ -33,7 +33,7 @@ jobs:
     #   # for generating CHANGELOG entries using PR history
     #   pull-requests: read
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           token: ${{ secrets.BUMP_N_RELEASE }}
           fetch-depth: 0
@@ -71,7 +71,7 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           fetch-tags: true
