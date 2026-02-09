@@ -33,14 +33,14 @@ jobs:
     #   # for generating CHANGELOG entries using PR history
     #   pull-requests: read
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           token: ${{ secrets.BUMP_N_RELEASE }}
           fetch-depth: 0
           fetch-tags: true
           persist-credentials: true # needed for `git push`
 
-      - uses: cargo-bins/cargo-binstall@ae04fb5e853ae6cd3ad7de4a1d554a8b646d12aa # v1.15.11
+      - uses: cargo-bins/cargo-binstall@ec80feb9e330418e014932e5982599255eff6dbb # v1.17.4
       - run: cargo binstall -y nu@${NUSHELL_VERSION}
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -71,7 +71,7 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           fetch-tags: true
