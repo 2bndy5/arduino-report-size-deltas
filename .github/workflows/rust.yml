@@ -49,6 +49,27 @@ jobs:
         run: nur test --profile ci
       - name: Generate coverage reports
         run: nur test lcov
+      - name: Upload coverage report as artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: lcov-report
+          path: lcov.info
+          if-no-files-found: error
+
+  coverage:
+    needs: [test]
+    runs-on: ubuntu-latest
+    environment:
+      name: test-coverage
+      url: https://app.codecov.io/gh/2bndy5/arduino-report-size-deltas
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Download coverage report artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: lcov-report
       - uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
