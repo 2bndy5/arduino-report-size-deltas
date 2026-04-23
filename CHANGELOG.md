@@ -6,7 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [1.0.5] - 2026-04-23
+
+### <!-- 6 --> 📦 Dependency updates
+
+- Bump the actions group across 1 directory with 9 updates by @dependabot[bot] in [#44](https://github.com/2bndy5/arduino-report-size-deltas/pull/44)
+- Bump openssl from 0.10.73 to 0.10.78 by @dependabot[bot] in [#46](https://github.com/2bndy5/arduino-report-size-deltas/pull/46)
+- Bump cargo dependencies by @2bndy5 in [#49](https://github.com/2bndy5/arduino-report-size-deltas/pull/49)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Upload coverage reports in a deployment env by @2bndy5 in [#50](https://github.com/2bndy5/arduino-report-size-deltas/pull/50)
+
+[1.0.5]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v1.0.4...v1.0.5
+
+Full commit diff: [`v1.0.4...v1.0.5`][1.0.5]
+
 ## [1.0.4] - 2025-11-13
+
+### <!-- 6 --> 📦 Dependency updates
+
+- Bump version to v1.0.4 by @2bndy5 in [`5d226f8`](https://github.com/2bndy5/arduino-report-size-deltas/commit/5d226f8792e1cca65534f3697748af289138af25)
 
 ### <!-- 9 --> 🗨️ Changed
 

@@ -5,7 +5,7 @@ exclude = ["examples/", ".github/", ".vscode/"]
 license = "GPL-3.0-or-later"
 name = "arduino-report-size-deltas"
 repository = "https://github.com/2bndy5/arduino-report-size-deltas"
-version = "1.0.4"
+version = "1.0.5"
 
 [[bin]]
 name = "report-size-deltas"
