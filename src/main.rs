@@ -4,9 +4,7 @@ use anyhow::{Context, Result, anyhow};
 use arduino_report_size_deltas::{COMMENT_MARKER, generate_comment};
 use clap::Parser;
 use colored::Colorize;
-use git_bot_feedback::{
-    CommentPolicy, RestApiClient, ThreadCommentOptions, client::GithubApiClient,
-};
+use git_bot_feedback::{CommentPolicy, ThreadCommentOptions, client::init_client};
 use log::{Level, LevelFilter, Metadata, Record};
 use std::{
     env,
@@ -101,23 +99,22 @@ pub fn logger_init() {
 async fn run(args: &[String]) -> Result<()> {
     let args = Args::parse_from(args);
     logger_init();
-    let client =
-        GithubApiClient::new().with_context(|| "Failed to instantiate GitHub REST API client")?;
-    log::set_max_level(if client.debug_enabled {
+    let client = init_client()?;
+    log::set_max_level(if client.is_debug_enabled() {
         LevelFilter::Debug
     } else {
         LevelFilter::Info
     });
 
-    GithubApiClient::start_log_group("Generating comment from JSON files");
+    client.start_log_group("Generating comment from JSON files");
     let comment = generate_comment(&args.sketches_reports_source);
-    GithubApiClient::end_log_group();
+    client.end_log_group("Generating comment from JSON files");
 
     match comment {
         Ok(comment) => {
             if !client.is_pr_event() {
                 log::info!("Appending to step summary");
-                GithubApiClient::append_step_summary(&comment)?;
+                client.append_step_summary(&comment)?;
                 Ok(())
             } else {
                 log::info!("Posting comment");
@@ -155,7 +152,7 @@ mod test {
     use crate::run;
 
     const REPO: &str = "2bndy5/arduino-report-size-deltas";
-    const PR: &str = "22";
+    const PR: u64 = 22;
     const TOKEN: &str = "123456";
 
     #[derive(Debug, Default)]
@@ -169,10 +166,21 @@ mod test {
         let mut event_payload_path = NamedTempFile::new().unwrap();
         let mut gh_summary_path = NamedTempFile::new().unwrap();
         event_payload_path
-            .write_all(format!("{{\"number\": {PR}}}").as_bytes())
+            .write_all(
+                serde_json::json!({
+                "pull_request": {
+                    "draft": false,
+                    "state": "open",
+                    "number": PR,
+                    "locked": false,
+                }})
+                .to_string()
+                .as_bytes(),
+            )
             .unwrap();
 
         unsafe {
+            env::set_var("GITHUB_ACTIONS", "true");
             env::set_var("GITHUB_API_URL", server.url());
             env::set_var("GITHUB_REPOSITORY", REPO);
             env::set_var("GITHUB_SHA", "deadbeef");
