@@ -4,9 +4,7 @@ use anyhow::{Context, Result, anyhow};
 use arduino_report_size_deltas::{COMMENT_MARKER, generate_comment};
 use clap::Parser;
 use colored::Colorize;
-use git_bot_feedback::{
-    CommentPolicy, RestApiClient, ThreadCommentOptions, client::GithubApiClient,
-};
+use git_bot_feedback::{CommentPolicy, ThreadCommentOptions, client::init_client};
 use log::{Level, LevelFilter, Metadata, Record};
 use std::{
     env,
@@ -101,23 +99,22 @@ pub fn logger_init() {
 async fn run(args: &[String]) -> Result<()> {
     let args = Args::parse_from(args);
     logger_init();
-    let client =
-        GithubApiClient::new().with_context(|| "Failed to instantiate GitHub REST API client")?;
-    log::set_max_level(if client.debug_enabled {
+    let client = init_client().with_context(|| "Failed to instantiate GitHub REST API client")?;
+    log::set_max_level(if client.is_debug_enabled() {
         LevelFilter::Debug
     } else {
         LevelFilter::Info
     });
 
-    GithubApiClient::start_log_group("Generating comment from JSON files");
+    client.start_log_group("Generating comment from JSON files");
     let comment = generate_comment(&args.sketches_reports_source);
-    GithubApiClient::end_log_group();
+    client.end_log_group("Generating comment from JSON files");
 
     match comment {
         Ok(comment) => {
             if !client.is_pr_event() {
                 log::info!("Appending to step summary");
-                GithubApiClient::append_step_summary(&comment)?;
+                client.append_step_summary(&comment)?;
                 Ok(())
             } else {
                 log::info!("Posting comment");
