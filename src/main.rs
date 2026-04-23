@@ -99,7 +99,7 @@ pub fn logger_init() {
 async fn run(args: &[String]) -> Result<()> {
     let args = Args::parse_from(args);
     logger_init();
-    let client = init_client().with_context(|| "Failed to instantiate GitHub REST API client")?;
+    let client = init_client()?;
     log::set_max_level(if client.is_debug_enabled() {
         LevelFilter::Debug
     } else {
@@ -152,7 +152,7 @@ mod test {
     use crate::run;
 
     const REPO: &str = "2bndy5/arduino-report-size-deltas";
-    const PR: &str = "22";
+    const PR: u64 = 22;
     const TOKEN: &str = "123456";
 
     #[derive(Debug, Default)]
@@ -166,10 +166,21 @@ mod test {
         let mut event_payload_path = NamedTempFile::new().unwrap();
         let mut gh_summary_path = NamedTempFile::new().unwrap();
         event_payload_path
-            .write_all(format!("{{\"number\": {PR}}}").as_bytes())
+            .write_all(
+                serde_json::json!({
+                "pull_request": {
+                    "draft": false,
+                    "state": "open",
+                    "number": PR,
+                    "locked": false,
+                }})
+                .to_string()
+                .as_bytes(),
+            )
             .unwrap();
 
         unsafe {
+            env::set_var("GITHUB_ACTIONS", "true");
             env::set_var("GITHUB_API_URL", server.url());
             env::set_var("GITHUB_REPOSITORY", REPO);
             env::set_var("GITHUB_SHA", "deadbeef");
