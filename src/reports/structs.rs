@@ -12,10 +12,10 @@
 //! There doesn't seem to be a documented schema for the JSON data being parsed.'
 //! All python code producing the JSON data is partially typed, so it hard to
 //! discern a proper schema.
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// The root structure that describes a report about compilation.
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Deserialize, Default, Serialize)]
 pub struct Report {
     /// The boards targeted when compiling sketches.
     pub boards: Vec<Board>,
@@ -79,7 +79,7 @@ impl From<ReportOld> for Report {
 /// A data structure to describe the target [`Board::board`] and compilation context.
 ///
 /// Includes it's  ([`Board::sizes`]), and which [`Board::sketches`] were compiled.
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Deserialize, Default, Serialize)]
 pub struct Board {
     /// The board's "Fully Qualified Board Name" (FQBN).
     ///
@@ -94,7 +94,7 @@ pub struct Board {
 }
 
 /// A data structure used to describe a compiled sketch.
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Deserialize, Default, Serialize)]
 pub struct Sketch {
     /// The relative path to the sketch compiled.
     ///
@@ -118,7 +118,7 @@ pub struct Sketch {
 }
 
 /// The number of warnings about a particular sketch's compilation.
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Deserialize, Default, Serialize)]
 pub struct SketchWarnings {
     /// The current number of warnings from latest compilation.
     pub current: AbsCount,
@@ -131,7 +131,7 @@ pub struct SketchWarnings {
 }
 
 /// An absolute count used for the values of [`SketchWarnings`].
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Deserialize, Default, Serialize)]
 pub struct AbsCount {
     /// The absolute 32-bit integer value.
     ///
@@ -142,7 +142,7 @@ pub struct AbsCount {
 /// A data structure to describe a compilation's size.
 ///
 /// Used for [`SketchSizeKind::Ram`] and [`SketchSizeKind::Flash`].
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Deserialize, Default, Serialize)]
 pub struct SketchSize {
     /// The maximum size of something.
     ///
@@ -175,7 +175,7 @@ impl SketchSize {
 }
 
 /// An enumeration of possible compilation size kinds.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(tag = "name")]
 pub enum SketchSizeKind {
     /// The compilation size of "Ram for global variables".
@@ -202,7 +202,7 @@ impl Default for SketchSizeKind {
 }
 
 /// An enumeration of the possible values used to describe a compilation's size.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum SizeValue<T> {
     /// Represents a "Not Applicable" (N/A) value.
@@ -219,7 +219,7 @@ impl<T> Default for SizeValue<T> {
 }
 
 /// A data structure to describe fields in [`SketchSize`].
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Deserialize, Default, Serialize)]
 pub struct SketchDeltaSize {
     /// The absolute compilation size value.
     ///
@@ -234,7 +234,7 @@ pub struct SketchDeltaSize {
 }
 
 /// An enumeration of a [`Board::sizes`].
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(tag = "name")]
 pub enum BoardSize {
     /// The maximum size of "RAM for global variables".
