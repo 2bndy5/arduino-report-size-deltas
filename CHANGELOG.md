@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [1.0.6] - 2026-04-25
+
+### <!-- 6 --> 📦 Dependency updates
+
+- Make `Report` struct serializable by @2bndy5 in [`5e1fbeb`](https://github.com/2bndy5/arduino-report-size-deltas/commit/5e1fbeb4c4c2150648daa6a55224356f17022ebd)
+
+[1.0.6]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v1.0.5...v1.0.6
+
+Full commit diff: [`v1.0.5...v1.0.6`][1.0.6]
+
 ## [1.0.5] - 2026-04-23
 
 ### <!-- 6 --> 📦 Dependency updates
@@ -13,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump the actions group across 1 directory with 9 updates by @dependabot[bot] in [#44](https://github.com/2bndy5/arduino-report-size-deltas/pull/44)
 - Bump openssl from 0.10.73 to 0.10.78 by @dependabot[bot] in [#46](https://github.com/2bndy5/arduino-report-size-deltas/pull/46)
 - Bump cargo dependencies by @2bndy5 in [#49](https://github.com/2bndy5/arduino-report-size-deltas/pull/49)
+- Bump version to v1.0.5 by @2bndy5 in [`eacddbf`](https://github.com/2bndy5/arduino-report-size-deltas/commit/eacddbf76b9cea19ae86b0e23864f550962975be)
 
 ### <!-- 9 --> 🗨️ Changed
 
