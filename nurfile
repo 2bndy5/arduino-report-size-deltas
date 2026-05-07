@@ -63,12 +63,26 @@ def "nur docs" [
 }
 
 
-# Run clippy and rustfmt (on packages only)
-def "nur lint" [] {
-    run-cmd ...(
-        [cargo clippy --fix --allow-dirty --allow-staged]
-    )
-    run-cmd ...[cargo fmt]
+# Run clippy and rustfmt
+export def "nur lint" [
+    --check (-c), # Only check, do not fix
+    --no-features (-n), # Do not include features when linting
+] {
+    mut clippy = [cargo clippy]
+    if (not $no_features) {
+        $clippy = $clippy | append [--features bin]
+    }
+    if $check {
+        $clippy = $clippy | append [-- -D warnings]
+    } else {
+        $clippy = $clippy | append [--fix --allow-dirty --allow-staged]
+    }
+    run-cmd ...$clippy
+    mut fmt = [cargo fmt]
+    if $check {
+        $fmt = $fmt | append "--check"
+    }
+    run-cmd ...$fmt
 }
 
 # Run pre-commit hooks manually.
