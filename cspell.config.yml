@@ -40,3 +40,4 @@ words:
 ignorePaths:
   - .gitattributes
   - .gitignore
+  - CHANGELOG.md
