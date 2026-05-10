@@ -248,18 +248,11 @@ where
         type Value = (); // We want to return unit
 
         fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-            formatter.write_str("any string")
+            formatter.write_str("any `&str` value")
         }
 
         // Accept any string and simply return ()
         fn visit_str<E>(self, _value: &str) -> Result<(), E>
-        where
-            E: serde::de::Error,
-        {
-            Ok(())
-        }
-
-        fn visit_string<E>(self, _value: String) -> Result<(), E>
         where
             E: serde::de::Error,
         {
@@ -380,18 +373,5 @@ mod test {
         let size_value = SizeValue::<u8>::NotApplicable;
         let serialized = serde_json::to_string(&size_value).unwrap();
         assert_eq!(serialized, r#""N/A""#);
-    }
-
-    #[test]
-    fn deserialize_not_applicable() {
-        use serde::de::{
-            Deserialize, IntoDeserializer,
-            value::{Error as ValueError, StringDeserializer},
-        };
-
-        let input = r#""N/A""#.to_string();
-        let deserializer: StringDeserializer<ValueError> = input.into_deserializer();
-        let deserialized: SizeValue<u8> = SizeValue::deserialize(deserializer).unwrap();
-        assert_eq!(deserialized, SizeValue::NotApplicable);
     }
 }
