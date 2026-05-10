@@ -327,6 +327,8 @@ impl BoardSize {
 
 #[cfg(test)]
 mod test {
+    #![allow(clippy::unwrap_used)]
+
     use crate::report_structs::{BoardSize, SizeValue};
 
     use super::{Report, SketchSize, SketchSizeKind};
@@ -371,5 +373,25 @@ mod test {
             sketch_size_kind.get_size_mut().maximum = altered_value;
             assert_eq!(sketch_size_kind.get_size().maximum, altered_value);
         }
+    }
+
+    #[test]
+    fn serialize_not_applicable() {
+        let size_value = SizeValue::<u8>::NotApplicable;
+        let serialized = serde_json::to_string(&size_value).unwrap();
+        assert_eq!(serialized, r#""N/A""#);
+    }
+
+    #[test]
+    fn deserialize_not_applicable() {
+        use serde::de::{
+            Deserialize, IntoDeserializer,
+            value::{Error as ValueError, StringDeserializer},
+        };
+
+        let input = r#""N/A""#.to_string();
+        let deserializer: StringDeserializer<ValueError> = input.into_deserializer();
+        let deserialized: SizeValue<u8> = SizeValue::deserialize(deserializer).unwrap();
+        assert_eq!(deserialized, SizeValue::NotApplicable);
     }
 }
