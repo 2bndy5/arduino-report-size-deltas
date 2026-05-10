@@ -30,7 +30,7 @@ impl SizeKind {
                 }
                 format!("{v}")
             }
-            SizeValue::NotApplicable(v) => v.clone(),
+            SizeValue::NotApplicable => "N/A".to_string(),
         }
     }
 }
@@ -57,7 +57,7 @@ impl SizeDeltaRange {
     /// [`Self::maximum`] [`SizeKind::absolute`] values.
     fn add_absolute(&mut self, size: i64) {
         match self.minimum.absolute {
-            SizeValue::NotApplicable(_) => {
+            SizeValue::NotApplicable => {
                 self.minimum.absolute = SizeValue::Known(size);
             }
             SizeValue::Known(val) => {
@@ -67,7 +67,7 @@ impl SizeDeltaRange {
             }
         }
         match self.maximum.absolute {
-            SizeValue::NotApplicable(_) => {
+            SizeValue::NotApplicable => {
                 self.maximum.absolute = SizeValue::Known(size);
             }
             SizeValue::Known(val) => {
@@ -82,7 +82,7 @@ impl SizeDeltaRange {
     /// [`Self::maximum`] [`SizeKind::relative`] values.
     fn add_relative(&mut self, size: f32) {
         match self.minimum.relative {
-            SizeValue::NotApplicable(_) => {
+            SizeValue::NotApplicable => {
                 self.minimum.relative = SizeValue::Known(size);
             }
             SizeValue::Known(val) => {
@@ -92,7 +92,7 @@ impl SizeDeltaRange {
             }
         }
         match self.maximum.relative {
-            SizeValue::NotApplicable(_) => {
+            SizeValue::NotApplicable => {
                 self.maximum.relative = SizeValue::Known(size);
             }
             SizeValue::Known(val) => {

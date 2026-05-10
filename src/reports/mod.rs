@@ -63,6 +63,8 @@ pub fn parse_artifacts<P: AsRef<Path>>(
 
 #[cfg(test)]
 mod test {
+    #![allow(clippy::unwrap_used)]
+
     use std::io::Write;
 
     use super::{JsonError, parse_json};

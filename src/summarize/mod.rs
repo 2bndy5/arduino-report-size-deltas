@@ -35,6 +35,8 @@ pub fn generate_comment<P: AsRef<Path>>(sketches_path: P) -> Result<String, Comm
 
 #[cfg(test)]
 mod test {
+    #![allow(clippy::unwrap_used)]
+
     use super::{CommentAssemblyError, generate_comment};
     use std::fs;
 
