@@ -12,7 +12,7 @@
 //! There doesn't seem to be a documented schema for the JSON data being parsed.'
 //! All python code producing the JSON data is partially typed, so it hard to
 //! discern a proper schema.
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer, de::Visitor};
 
 /// The root structure that describes a report about compilation.
 #[derive(Debug, Deserialize, Default, Serialize)]
@@ -36,13 +36,15 @@ impl Report {
             return false;
         }
         for board in &self.boards {
-            if board.sizes.is_none() || board.sizes.as_ref().is_some_and(|v| v.is_empty()) {
-                return false;
-            }
-            // unwrap() yields Some value because of the check above
-            for size in board.sizes.as_ref().unwrap() {
-                if !size.has_maximum() {
-                    return false;
+            match &board.sizes {
+                Some(sizes) if sizes.is_empty() => return false,
+                None => return false,
+                Some(sizes) => {
+                    for size in sizes {
+                        if !size.has_maximum() {
+                            return false;
+                        }
+                    }
                 }
             }
         }
@@ -201,21 +203,79 @@ impl Default for SketchSizeKind {
     }
 }
 
+impl SketchSizeKind {
+    /// A convenience function to get the inner [`SketchSize`].
+    pub fn get_size(&self) -> &SketchSize {
+        match self {
+            SketchSizeKind::Ram { size } => size,
+            SketchSizeKind::Flash { size } => size,
+        }
+    }
+
+    /// A convenience function to get a mutable reference to the inner [`SketchSize`].
+    pub fn get_size_mut(&mut self) -> &mut SketchSize {
+        match self {
+            SketchSizeKind::Ram { size } => size,
+            SketchSizeKind::Flash { size } => size,
+        }
+    }
+}
+
 /// An enumeration of the possible values used to describe a compilation's size.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone, Copy, Default, PartialEq, Eq)]
 #[serde(untagged)]
 pub enum SizeValue<T> {
     /// Represents a "Not Applicable" (N/A) value.
-    NotApplicable(String),
+    #[default]
+    #[serde(
+        deserialize_with = "any_str_val_is_not_applicable",
+        serialize_with = "not_applicable_to_string"
+    )]
+    NotApplicable,
 
     /// Represents a known value.
     Known(T),
 }
 
-impl<T> Default for SizeValue<T> {
-    fn default() -> Self {
-        SizeValue::NotApplicable(String::from("N/A"))
+/// Custom deserializer function
+fn any_str_val_is_not_applicable<'de, D>(deserializer: D) -> Result<(), D::Error>
+where
+    D: Deserializer<'de>,
+{
+    struct StringIgnorer;
+
+    impl<'de> Visitor<'de> for StringIgnorer {
+        type Value = (); // We want to return unit
+
+        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+            formatter.write_str("any string")
+        }
+
+        // Accept any string and simply return ()
+        fn visit_str<E>(self, _value: &str) -> Result<(), E>
+        where
+            E: serde::de::Error,
+        {
+            Ok(())
+        }
+
+        fn visit_string<E>(self, _value: String) -> Result<(), E>
+        where
+            E: serde::de::Error,
+        {
+            Ok(())
+        }
     }
+
+    deserializer.deserialize_string(StringIgnorer)
+}
+
+/// Custom serializer function
+fn not_applicable_to_string<S>(serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    serializer.serialize_str("N/A")
 }
 
 /// A data structure to describe fields in [`SketchSize`].
@@ -267,7 +327,7 @@ impl BoardSize {
 
 #[cfg(test)]
 mod test {
-    use crate::report_structs::BoardSize;
+    use crate::report_structs::{BoardSize, SizeValue};
 
     use super::{Report, SketchSize, SketchSizeKind};
 
@@ -295,5 +355,21 @@ mod test {
             BoardSize::default(),
             BoardSize::Flash { maximum: None }
         ));
+    }
+
+    #[test]
+    fn sketch_kind_sizes() {
+        let altered_value = Some(SizeValue::Known(42));
+        for mut sketch_size_kind in [
+            SketchSizeKind::Flash {
+                size: SketchSize::default(),
+            },
+            SketchSizeKind::Ram {
+                size: SketchSize::default(),
+            },
+        ] {
+            sketch_size_kind.get_size_mut().maximum = altered_value;
+            assert_eq!(sketch_size_kind.get_size().maximum, altered_value);
+        }
     }
 }

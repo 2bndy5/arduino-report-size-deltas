@@ -139,6 +139,8 @@ pub(super) fn generate_detailed_table(reports: &Vec<Report>, comment: &mut Strin
 
 #[cfg(test)]
 mod test {
+    #![allow(clippy::unwrap_used)]
+
     use crate::{
         reports::{parse_json, structs::Report},
         summarize::helpers::{END_DETAILS, GENERAL_HEADER, START_DETAILS},

@@ -1,4 +1,5 @@
 #![doc = include_str!("../README.md")]
+#![deny(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
 mod error;
 mod reports;
