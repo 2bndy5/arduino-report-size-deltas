@@ -181,14 +181,14 @@ impl SketchSize {
 #[serde(tag = "name")]
 pub enum SketchSizeKind {
     /// The compilation size of "Ram for global variables".
-    #[serde(rename(deserialize = "RAM for global variables"))]
+    #[serde(rename = "RAM for global variables")]
     Ram {
         #[serde(flatten)]
         size: SketchSize,
     },
 
     /// The compilation size of flash memory.
-    #[serde(rename(deserialize = "flash"))]
+    #[serde(rename = "flash")]
     Flash {
         #[serde(flatten)]
         size: SketchSize,
@@ -291,10 +291,10 @@ pub struct SketchDeltaSize {
 #[serde(tag = "name")]
 pub enum BoardSize {
     /// The maximum size of "RAM for global variables".
-    #[serde(rename(deserialize = "RAM for global variables"))]
+    #[serde(rename = "RAM for global variables")]
     Ram { maximum: Option<SizeValue<u64>> },
     /// The maximum size of flash memory.
-    #[serde(rename(deserialize = "flash"))]
+    #[serde(rename = "flash")]
     Flash { maximum: Option<SizeValue<u64>> },
 }
 
