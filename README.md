@@ -75,7 +75,7 @@ jobs:
           pattern: sketches-reports_*
           path: sketches-reports
       - name: Report size deltas
-        uses: 2bndy5/arduino-report-size-deltas@v1.1.0
+        uses: 2bndy5/arduino-report-size-deltas@v1.1.1
 ```
 
 ### Triggered by a `pull_request`
