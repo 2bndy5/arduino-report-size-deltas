@@ -41,3 +41,4 @@ ignorePaths:
   - .gitattributes
   - .gitignore
   - CHANGELOG.md
+  - tests/**/*.json
