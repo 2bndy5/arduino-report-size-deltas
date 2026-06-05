@@ -26,13 +26,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
         with:
           persist-credentials: false
       - name: Setup Rust
         run: rustup update --no-self-update
       - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@dc19f1e48450eefe5a29b8da6c6b00a87d730b37 # v1.18.1
+        uses: cargo-bins/cargo-binstall@aaa84a43aec4955a42c5ffc65d258961e39f276e # v1.19.1
       - name: Install cargo-llvm-cov, cargo-nextest, and nur
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -63,14 +63,14 @@ jobs:
       name: test-coverage
       url: https://app.codecov.io/gh/2bndy5/arduino-report-size-deltas
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
         with:
           persist-credentials: false
       - name: Download coverage report artifact
         uses: actions/download-artifact@v8
         with:
           name: lcov-report
-      - uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
+      - uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: lcov.info
@@ -145,7 +145,7 @@ jobs:
             cross: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
         with:
           persist-credentials: false
 
@@ -156,7 +156,7 @@ jobs:
 
       - name: Install cargo-binstall
         if: matrix.cross
-        uses: cargo-bins/cargo-binstall@dc19f1e48450eefe5a29b8da6c6b00a87d730b37 # v1.18.1
+        uses: cargo-bins/cargo-binstall@aaa84a43aec4955a42c5ffc65d258961e39f276e # v1.19.1
       - name: Install cross (cargo cross compiler)
         if: matrix.cross
         env:
@@ -208,7 +208,7 @@ jobs:
       # needed to upload release-assets
       contents: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
         with:
           persist-credentials: false
       - name: Install Rust
