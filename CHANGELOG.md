@@ -6,11 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [1.2.0] - 2026-06-06
+
+### <!-- 1 --> 🚀 Added
+
+- Use reqwest/default-tls instead of vendoring OpenSSL by @2bndy5 in [#64](https://github.com/2bndy5/arduino-report-size-deltas/pull/64)
+
+[1.2.0]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v1.1.1...v1.2.0
+
+Full commit diff: [`v1.1.1...v1.2.0`][1.2.0]
+
 ## [1.1.1] - 2026-05-12
 
 ### <!-- 4 --> 🛠️ Fixed
 
 - Serialize `SketchSizeKind` and `BoardSize` properly by @2bndy5 in [#55](https://github.com/2bndy5/arduino-report-size-deltas/pull/55)
+
+### <!-- 6 --> 📦 Dependency updates
+
+- Bump version to v1.1.1 by @2bndy5 in [`969c1dc`](https://github.com/2bndy5/arduino-report-size-deltas/commit/969c1dc307505cd9550aafb5defc248bbb96182a)
 
 [1.1.1]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v1.1.0...v1.1.1
 
