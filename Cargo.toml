@@ -30,7 +30,6 @@ default-features = false
 features = [
     "charset",
     "http2",
-    "native-tls",
     "system-proxy",
 ]
 
