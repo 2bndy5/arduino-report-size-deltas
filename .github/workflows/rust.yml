@@ -26,7 +26,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
         with:
           persist-credentials: false
       - name: Setup Rust
@@ -63,7 +63,7 @@ jobs:
       name: test-coverage
       url: https://app.codecov.io/gh/2bndy5/arduino-report-size-deltas
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
         with:
           persist-credentials: false
       - name: Download coverage report artifact
@@ -130,7 +130,7 @@ jobs:
             cross: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6.0.3
         with:
           persist-credentials: false
 
@@ -193,7 +193,7 @@ jobs:
       # needed to upload release-assets
       contents: write
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
         with:
           persist-credentials: false
       - name: Install Rust
