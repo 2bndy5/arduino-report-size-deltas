@@ -33,14 +33,14 @@ jobs:
     #   # for generating CHANGELOG entries using PR history
     #   pull-requests: read
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
         with:
           token: ${{ secrets.BUMP_N_RELEASE }}
           fetch-depth: 0
           fetch-tags: true
           persist-credentials: true # needed for `git push`
 
-      - uses: cargo-bins/cargo-binstall@aaa84a43aec4955a42c5ffc65d258961e39f276e # v1.19.1
+      - uses: cargo-bins/cargo-binstall@30b5ca8b54e1dcffd9548bc87ede1531310fdc67 # v1.20.0
       - run: cargo binstall -y nu@${NUSHELL_VERSION}
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -71,7 +71,7 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -81,7 +81,7 @@ jobs:
         with:
           python-version: '3.x'
       - name: setup uv
-        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
       - name: Generate a changelog
         env:
           GITHUB_REPO: ${{ github.repository }}
