@@ -1,6 +1,6 @@
 //! A module to declare the data structures used to aggregate data from [`crate::reports::structs`].
 use crate::reports::structs::{SizeValue, SketchSizeKind};
-use std::fmt::Display;
+use std::{any::TypeId, fmt::Display};
 
 /// A data structure to represent absolute or relative changes in memory size.
 #[derive(Debug, Default)]
@@ -22,13 +22,26 @@ impl SizeKind {
     ///
     /// This basically just adds a "+" to positive numbers.
     /// Negative or zero `value`s are simply converted to a [`String`].
-    pub fn fmt<T: PartialOrd + Display + Default>(value: &SizeValue<T>) -> String {
+    pub fn fmt<T>(value: &SizeValue<T>) -> String
+    where
+        T: PartialOrd + Display + Default + Sized + 'static,
+    {
         match value {
             SizeValue::Known(v) => {
-                if *v > T::default() {
-                    return format!("+{v}");
-                }
-                format!("{v}")
+                let prefix = if *v > T::default() { "+" } else { "" };
+                let value = if TypeId::of::<T>() == TypeId::of::<f32>() {
+                    format!("{v:.3}")
+                        .trim_end_matches('0')
+                        // If all decimal places were `0`, we should
+                        // trim the insignificant decimal point also.
+                        // This has to be done separately to avoid
+                        // trimming a significant zero representing an integer.
+                        .trim_end_matches('.')
+                        .to_string()
+                } else {
+                    v.to_string()
+                };
+                format!("{prefix}{value}")
             }
             SizeValue::NotApplicable => "N/A".to_string(),
         }
