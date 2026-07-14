@@ -6,11 +6,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [1.2.1] - 2026-07-14
+
+### <!-- 6 --> 📦 Dependency updates
+
+- Bump the actions group across 1 directory with 3 updates by @dependabot[bot] in [#65](https://github.com/2bndy5/arduino-report-size-deltas/pull/65)
+- Bump the actions group across 1 directory with 6 updates by @dependabot[bot] in [#71](https://github.com/2bndy5/arduino-report-size-deltas/pull/71)
+- Bump the cargo group across 1 directory with 3 updates by @dependabot[bot] in [#70](https://github.com/2bndy5/arduino-report-size-deltas/pull/70)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Cap the f32 precision of relative deltas by @2bndy5 in [#73](https://github.com/2bndy5/arduino-report-size-deltas/pull/73)
+
+[1.2.1]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v1.2.0...v1.2.1
+
+Full commit diff: [`v1.2.0...v1.2.1`][1.2.1]
+
 ## [1.2.0] - 2026-06-06
 
 ### <!-- 1 --> 🚀 Added
 
 - Use reqwest/default-tls instead of vendoring OpenSSL by @2bndy5 in [#64](https://github.com/2bndy5/arduino-report-size-deltas/pull/64)
+
+### <!-- 6 --> 📦 Dependency updates
+
+- Bump version to v1.2.0 by @2bndy5 in [`1fed6ec`](https://github.com/2bndy5/arduino-report-size-deltas/commit/1fed6ecc76e1321a5e76ec8db9bfee64d994e097)
 
 [1.2.0]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v1.1.1...v1.2.0
 
