@@ -36,4 +36,4 @@ jobs:
           name: sketch-reports
           path: sketches-reports
       - name: Report size deltas
-        uses: ./
+        uses: $/
