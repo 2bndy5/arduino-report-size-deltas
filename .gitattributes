@@ -17,3 +17,4 @@
 *.nu text eol=lf
 nurfile text eol=lf
 *.json text eol=lf
+LICENSE text eol=lf
