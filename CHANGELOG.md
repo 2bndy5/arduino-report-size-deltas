@@ -6,6 +6,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [1.2.2] - 2026-10-10
+
+### <!-- 6 --> 📦 Dependency updates
+
+- Bump the actions group with 2 updates by @dependabot[bot] in [#74](https://github.com/2bndy5/arduino-report-size-deltas/pull/74)
+- Bump the actions group with 4 updates by @dependabot[bot] in [#76](https://github.com/2bndy5/arduino-report-size-deltas/pull/76)
+- Bump quinn-proto from 0.11.14 to 0.11.16 by @dependabot[bot] in [#77](https://github.com/2bndy5/arduino-report-size-deltas/pull/77)
+- Bump the actions group with 2 updates by @dependabot[bot] in [#79](https://github.com/2bndy5/arduino-report-size-deltas/pull/79)
+- Bump the cargo group across 1 directory with 6 updates by @dependabot[bot] in [#78](https://github.com/2bndy5/arduino-report-size-deltas/pull/78)
+- Bump clap from 4.6.4 to 4.6.6 in the cargo group by @dependabot[bot] in [#81](https://github.com/2bndy5/arduino-report-size-deltas/pull/81)
+- Bump the cargo group across 1 directory with 2 updates by @dependabot[bot] in [#84](https://github.com/2bndy5/arduino-report-size-deltas/pull/84)
+- Bump the actions group across 1 directory with 2 updates by @dependabot[bot] in [#83](https://github.com/2bndy5/arduino-report-size-deltas/pull/83)
+- Bump the actions group with 2 updates by @dependabot[bot] in [#86](https://github.com/2bndy5/arduino-report-size-deltas/pull/86)
+- Bump reqwest from 0.13.4 to 0.13.5 in the cargo group by @dependabot[bot] in [#85](https://github.com/2bndy5/arduino-report-size-deltas/pull/85)
+- Bump the cargo group across 1 directory with 3 updates by @dependabot[bot] in [#89](https://github.com/2bndy5/arduino-report-size-deltas/pull/89)
+- Bump the actions group across 1 directory with 3 updates by @dependabot[bot] in [#92](https://github.com/2bndy5/arduino-report-size-deltas/pull/92)
+- Bump git-bot-feedback from 0.8.2 to 0.8.3 in the cargo group by @dependabot[bot] in [#91](https://github.com/2bndy5/arduino-report-size-deltas/pull/91)
+- Bump a few dependencies by @2bndy5 in [#93](https://github.com/2bndy5/arduino-report-size-deltas/pull/93)
+
+[1.2.2]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v1.2.1...v1.2.2
+
+Full commit diff: [`v1.2.1...v1.2.2`][1.2.2]
+
 ## [1.2.1] - 2026-07-14
 
 ### <!-- 6 --> 📦 Dependency updates
@@ -13,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump the actions group across 1 directory with 3 updates by @dependabot[bot] in [#65](https://github.com/2bndy5/arduino-report-size-deltas/pull/65)
 - Bump the actions group across 1 directory with 6 updates by @dependabot[bot] in [#71](https://github.com/2bndy5/arduino-report-size-deltas/pull/71)
 - Bump the cargo group across 1 directory with 3 updates by @dependabot[bot] in [#70](https://github.com/2bndy5/arduino-report-size-deltas/pull/70)
+- Bump version to v1.2.1 by @2bndy5 in [`59d8b37`](https://github.com/2bndy5/arduino-report-size-deltas/commit/59d8b37b161ef638a7b326ba1bd3a17e33ace237)
 
 ### <!-- 9 --> 🗨️ Changed
 
