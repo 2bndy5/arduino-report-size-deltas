@@ -1,6 +1,7 @@
 //! Runs the CLI binary as a scheduled CI job against a mocked GitHub API.
 use arduino_report_size_deltas::COMMENT_MARKER;
 use mockito::{Matcher, Mock, Server, ServerGuard};
+use serde_json::{Value, json};
 use std::{
     fs,
     io::{Cursor, Write},
@@ -155,6 +156,105 @@ fn continues_after_a_failed_download() {
         stdout.contains("Failed to report on PR #1")
             && stderr.contains("Failed to report on 1 PR(s)"),
         "stdout: {stdout}\nstderr: {stderr}"
+    );
+    for mock in mocks {
+        mock.assert();
+    }
+}
+
+#[test]
+fn follows_paginated_listings() {
+    let mut server = Server::new();
+    let url = server.url();
+    let zip = zip_reports();
+    let up_to_date = format!("{COMMENT_MARKER}### Memory usage change @ ccc");
+    let page = |nodes: Value, next: Option<&str>| {
+        json!({"data": {"repository": {"pullRequests": {
+            "nodes": nodes,
+            "pageInfo": {"hasNextPage": next.is_some(), "endCursor": next},
+        }}}})
+        .to_string()
+    };
+    let pr = |number: u64, sha: &str, comments: Value| {
+        json!({
+            "number": number,
+            "locked": false,
+            "headRefOid": sha,
+            "comments": {"nodes": comments},
+        })
+    };
+    let artifact = |sha: Option<&str>, expired: bool, id: u64| {
+        let mut value = json!({
+            "expired": expired,
+            "archive_download_url": format!("{url}/download/{id}"),
+        });
+        if let Some(sha) = sha {
+            value["workflow_run"] = json!({"head_sha": sha});
+        }
+        value
+    };
+
+    let mut mocks = vec![
+        server
+            .mock("POST", "/graphql")
+            .match_body(Matcher::Regex(r#""after":null"#.to_string()))
+            .with_body(page(json!([pr(1, "aaa", json!([]))]), Some("cursor1")))
+            .expect(1)
+            .create(),
+        server
+            .mock("POST", "/graphql")
+            .match_body(Matcher::Regex(r#""after":"cursor1""#.to_string()))
+            .with_body(page(
+                json!([pr(2, "ccc", json!([{"databaseId": 9, "body": up_to_date}]))]),
+                None,
+            ))
+            .expect(1)
+            .create(),
+    ];
+
+    // The first page is full, but has nothing usable: it forces a second page to be probed.
+    let mut first_page = vec![artifact(Some("aaa"), true, 8), artifact(None, false, 9)];
+    first_page.extend((0..98).map(|_| artifact(Some("zzz"), false, 10)));
+    let artifacts_query = |page: &str| {
+        Matcher::AllOf(vec![
+            Matcher::UrlEncoded("name".into(), ARTIFACT_NAME.into()),
+            Matcher::UrlEncoded("page".into(), page.into()),
+        ])
+    };
+    mocks.push(
+        server
+            .mock("GET", "/repos/owner/repo/actions/artifacts")
+            .match_query(artifacts_query("1"))
+            .with_body(json!({"artifacts": first_page}).to_string())
+            .expect(1)
+            .create(),
+    );
+    mocks.push(
+        server
+            .mock("GET", "/repos/owner/repo/actions/artifacts")
+            .match_query(artifacts_query("2"))
+            .with_body(json!({"artifacts": [artifact(Some("aaa"), false, 1)]}).to_string())
+            .expect(1)
+            .create(),
+    );
+    mocks.push(
+        server
+            .mock("GET", "/download/1")
+            .with_body(&zip)
+            .expect(1)
+            .create(),
+    );
+    mocks.push(mock_report_post(
+        &mut server,
+        "POST",
+        "/repos/owner/repo/issues/1/comments",
+    ));
+
+    let output = run_cli(&server);
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
     );
     for mock in mocks {
         mock.assert();

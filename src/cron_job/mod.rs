@@ -304,7 +304,7 @@ mod test {
     use super::run;
     use arduino_report_size_deltas::CronJobError;
     use git_bot_feedback::client::LocalClient;
-    use mockito::Server;
+    use mockito::{Matcher, Mock, Server};
     use serde_json::json;
     use std::env;
 
@@ -364,5 +364,334 @@ mod test {
             .await
             .unwrap_err();
         assert!(matches!(err, CronJobError::GraphQl(_)), "{err:?}");
+    }
+
+    #[tokio::test]
+    async fn invalid_token() {
+        let err = run(&LocalClient, "bad\ntoken", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(matches!(err, CronJobError::Header(_)), "{err:?}");
+    }
+
+    #[tokio::test]
+    async fn invalid_api_url() {
+        let server = Server::new_async().await;
+        set_env(&server);
+        unsafe { env::set_var("GITHUB_API_URL", "not a url") };
+        let err = run(&LocalClient, "token", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(matches!(err, CronJobError::Url(_)), "{err:?}");
+    }
+
+    #[tokio::test]
+    async fn invalid_graphql_url() {
+        let server = Server::new_async().await;
+        set_env(&server);
+        unsafe { env::set_var("GITHUB_GRAPHQL_URL", "not a url") };
+        let err = run(&LocalClient, "token", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(matches!(err, CronJobError::Url(_)), "{err:?}");
+    }
+
+    #[tokio::test]
+    async fn graphql_http_error() {
+        let mut server = Server::new_async().await;
+        set_env(&server);
+        server.mock("POST", "/graphql").with_status(500).create();
+        let err = run(&LocalClient, "token", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(
+            matches!(
+                err,
+                CronJobError::Http {
+                    context: "list open pull requests",
+                    ..
+                }
+            ),
+            "{err:?}"
+        );
+    }
+
+    fn mock_pending_pr(server: &mut Server) -> Mock {
+        let body = json!({"data": {"repository": {"pullRequests": {
+            "nodes": [{
+                "number": 1,
+                "locked": false,
+                "headRefOid": "aaa",
+                "comments": {"nodes": []},
+            }],
+            "pageInfo": {"hasNextPage": false, "endCursor": null},
+        }}}});
+        server
+            .mock("POST", "/graphql")
+            .with_body(body.to_string())
+            .create()
+    }
+
+    fn mock_artifacts(server: &mut Server, download_url: &str) -> Mock {
+        let body = json!({"artifacts": [{
+            "expired": false,
+            "archive_download_url": download_url,
+            "workflow_run": {"head_sha": "aaa"},
+        }]});
+        server
+            .mock("GET", "/repos/owner/repo/actions/artifacts")
+            .match_query(Matcher::Any)
+            .with_body(body.to_string())
+            .create()
+    }
+
+    #[tokio::test]
+    async fn artifacts_http_error() {
+        let mut server = Server::new_async().await;
+        set_env(&server);
+        let _graphql = mock_pending_pr(&mut server);
+        server
+            .mock("GET", "/repos/owner/repo/actions/artifacts")
+            .match_query(Matcher::Any)
+            .with_status(500)
+            .create();
+        let err = run(&LocalClient, "token", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(
+            matches!(
+                err,
+                CronJobError::Http {
+                    context: "list artifacts",
+                    ..
+                }
+            ),
+            "{err:?}"
+        );
+    }
+
+    #[tokio::test]
+    async fn invalid_artifacts_payload() {
+        let mut server = Server::new_async().await;
+        set_env(&server);
+        let _graphql = mock_pending_pr(&mut server);
+        server
+            .mock("GET", "/repos/owner/repo/actions/artifacts")
+            .match_query(Matcher::Any)
+            .with_body("{}")
+            .create();
+        let err = run(&LocalClient, "token", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(
+            matches!(
+                err,
+                CronJobError::Json {
+                    context: "list of artifacts",
+                    ..
+                }
+            ),
+            "{err:?}"
+        );
+    }
+
+    #[tokio::test]
+    async fn invalid_download_url() {
+        let mut server = Server::new_async().await;
+        set_env(&server);
+        let _graphql = mock_pending_pr(&mut server);
+        let _artifacts = mock_artifacts(&mut server, "not a url");
+        let err = run(&LocalClient, "token", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(matches!(err, CronJobError::ReportFailures(1)), "{err:?}");
+    }
+
+    #[tokio::test]
+    async fn download_is_not_a_zip() {
+        let mut server = Server::new_async().await;
+        set_env(&server);
+        let _graphql = mock_pending_pr(&mut server);
+        let download_url = format!("{}/download", server.url());
+        let _artifacts = mock_artifacts(&mut server, &download_url);
+        let download = server
+            .mock("GET", "/download")
+            .with_body("not a zip")
+            .expect(1)
+            .create();
+        let err = run(&LocalClient, "token", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(matches!(err, CronJobError::ReportFailures(1)), "{err:?}");
+        download.assert();
+    }
+
+    fn chunked_body_failure(w: &mut dyn std::io::Write) -> std::io::Result<()> {
+        w.write_all(b"partial")?;
+        w.flush()?;
+        Err(std::io::Error::other("connection lost"))
+    }
+
+    #[tokio::test]
+    async fn invalid_graphql_json() {
+        let mut server = Server::new_async().await;
+        set_env(&server);
+        server
+            .mock("POST", "/graphql")
+            .with_body("not json")
+            .create();
+        let err = run(&LocalClient, "token", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(
+            matches!(
+                err,
+                CronJobError::Json {
+                    context: "list of open pull requests",
+                    ..
+                }
+            ),
+            "{err:?}"
+        );
+    }
+
+    #[tokio::test]
+    async fn primary_rate_limit() {
+        let mut server = Server::new_async().await;
+        set_env(&server);
+        server
+            .mock("POST", "/graphql")
+            .with_status(403)
+            .with_header("x-ratelimit-remaining", "0")
+            .with_header("x-ratelimit-reset", "1893456000")
+            .create();
+        let err = run(&LocalClient, "token", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(matches!(err, CronJobError::Client(_)), "{err:?}");
+    }
+
+    #[tokio::test]
+    async fn graphql_body_is_cut_short() {
+        let mut server = Server::new_async().await;
+        set_env(&server);
+        server
+            .mock("POST", "/graphql")
+            .with_chunked_body(chunked_body_failure)
+            .create();
+        let err = run(&LocalClient, "token", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(
+            matches!(
+                err,
+                CronJobError::Http {
+                    context: "list open pull requests",
+                    ..
+                }
+            ),
+            "{err:?}"
+        );
+    }
+
+    #[tokio::test]
+    async fn artifacts_body_is_cut_short() {
+        let mut server = Server::new_async().await;
+        set_env(&server);
+        let _graphql = mock_pending_pr(&mut server);
+        server
+            .mock("GET", "/repos/owner/repo/actions/artifacts")
+            .match_query(Matcher::Any)
+            .with_chunked_body(chunked_body_failure)
+            .create();
+        let err = run(&LocalClient, "token", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(
+            matches!(
+                err,
+                CronJobError::Http {
+                    context: "list artifacts",
+                    ..
+                }
+            ),
+            "{err:?}"
+        );
+    }
+
+    #[tokio::test]
+    async fn download_is_cut_short() {
+        let mut server = Server::new_async().await;
+        set_env(&server);
+        let _graphql = mock_pending_pr(&mut server);
+        let download_url = format!("{}/download", server.url());
+        let _artifacts = mock_artifacts(&mut server, &download_url);
+        let download = server
+            .mock("GET", "/download")
+            .with_chunked_body(chunked_body_failure)
+            .expect(1)
+            .create();
+        let err = run(&LocalClient, "token", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(matches!(err, CronJobError::ReportFailures(1)), "{err:?}");
+        download.assert();
+    }
+
+    #[tokio::test]
+    async fn posting_the_report_fails() {
+        let mut server = Server::new_async().await;
+        set_env(&server);
+        let _graphql = mock_pending_pr(&mut server);
+        let download_url = format!("{}/download", server.url());
+        let _artifacts = mock_artifacts(&mut server, &download_url);
+        let mut writer = zip::ZipWriter::new(std::io::Cursor::new(vec![]));
+        for entry in std::fs::read_dir("tests/size-deltas-reports-new").unwrap() {
+            let path = entry.unwrap().path();
+            if path.extension().is_some_and(|e| e == "json") {
+                let options = zip::write::SimpleFileOptions::default();
+                writer
+                    .start_file(path.file_name().unwrap().to_string_lossy(), options)
+                    .unwrap();
+                std::io::Write::write_all(&mut writer, &std::fs::read(&path).unwrap()).unwrap();
+            }
+        }
+        let _download = server
+            .mock("GET", "/download")
+            .with_body(writer.finish().unwrap().into_inner())
+            .create();
+        let post = server
+            .mock("POST", "/repos/owner/repo/issues/1/comments")
+            .with_status(500)
+            .expect(1)
+            .create();
+        let err = run(&LocalClient, "token", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(matches!(err, CronJobError::ReportFailures(1)), "{err:?}");
+        post.assert();
+    }
+
+    #[tokio::test]
+    async fn download_has_no_reports() {
+        let mut server = Server::new_async().await;
+        set_env(&server);
+        let _graphql = mock_pending_pr(&mut server);
+        let download_url = format!("{}/download", server.url());
+        let _artifacts = mock_artifacts(&mut server, &download_url);
+        let empty_zip = zip::ZipWriter::new(std::io::Cursor::new(vec![]))
+            .finish()
+            .unwrap()
+            .into_inner();
+        let download = server
+            .mock("GET", "/download")
+            .with_body(empty_zip)
+            .expect(1)
+            .create();
+        let err = run(&LocalClient, "token", "sketches-reports")
+            .await
+            .unwrap_err();
+        assert!(matches!(err, CronJobError::ReportFailures(1)), "{err:?}");
+        download.assert();
     }
 }
