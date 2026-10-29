@@ -48,7 +48,7 @@ jobs:
         with:
           path: ~/.cargo
           key: cargo-lib-${{ hashFiles('lib/src/**', 'lib/Cargo.toml') }}
-      - run: cargo clippy
+      - run: cargo clippy --all-targets --features bin -- -D warnings
       - run: cargo fmt --check
 
   check-pr-title:
