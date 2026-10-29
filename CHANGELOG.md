@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [1.3.0] - 2026-10-29
+
+### <!-- 1 --> 🚀 Added
+
+- Support schedule events by @2bndy5 in [#99](https://github.com/2bndy5/arduino-report-size-deltas/pull/99)
+
+### <!-- 6 --> 📦 Dependency updates
+
+- Bump the actions group with 3 updates by @dependabot[bot] in [#94](https://github.com/2bndy5/arduino-report-size-deltas/pull/94)
+- Bump cargo-bins/cargo-binstall by @dependabot[bot] in [#96](https://github.com/2bndy5/arduino-report-size-deltas/pull/96)
+- Bump the cargo group with 2 updates by @dependabot[bot] in [#95](https://github.com/2bndy5/arduino-report-size-deltas/pull/95)
+- Bump rustls from 0.23.45 to 0.23.46 by @dependabot[bot] in [#98](https://github.com/2bndy5/arduino-report-size-deltas/pull/98)
+
+### <!-- 8 --> 📝 Documentation
+
+- Add AGENTS.md by @2bndy5 in [#97](https://github.com/2bndy5/arduino-report-size-deltas/pull/97)
+
+[1.3.0]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v1.2.2...v1.3.0
+
+Full commit diff: [`v1.2.2...v1.3.0`][1.3.0]
+
 ## [1.2.2] - 2026-10-10
 
 ### <!-- 6 --> 📦 Dependency updates
@@ -24,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump the actions group across 1 directory with 3 updates by @dependabot[bot] in [#92](https://github.com/2bndy5/arduino-report-size-deltas/pull/92)
 - Bump git-bot-feedback from 0.8.2 to 0.8.3 in the cargo group by @dependabot[bot] in [#91](https://github.com/2bndy5/arduino-report-size-deltas/pull/91)
 - Bump a few dependencies by @2bndy5 in [#93](https://github.com/2bndy5/arduino-report-size-deltas/pull/93)
+- Bump version to v1.2.2 by @2bndy5 in [`01271d2`](https://github.com/2bndy5/arduino-report-size-deltas/commit/01271d226ea80e6b1264581d42379c53f4836d0e)
 
 [1.2.2]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v1.2.1...v1.2.2
 
