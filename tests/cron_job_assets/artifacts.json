@@ -1,0 +1,33 @@
+{
+  "total_count": 4,
+  "artifacts": [
+    {
+      "id": 1,
+      "name": "sketches-reports",
+      "expired": false,
+      "archive_download_url": "{{SERVER}}/download/1",
+      "workflow_run": {"head_sha": "aaa"}
+    },
+    {
+      "id": 2,
+      "name": "sketches-reports",
+      "expired": false,
+      "archive_download_url": "{{SERVER}}/download/2",
+      "workflow_run": {"head_sha": "bbb"}
+    },
+    {
+      "id": 3,
+      "name": "sketches-reports",
+      "expired": false,
+      "archive_download_url": "{{SERVER}}/download/3",
+      "workflow_run": {"head_sha": "ccc"}
+    },
+    {
+      "id": 4,
+      "name": "sketches-reports",
+      "expired": true,
+      "archive_download_url": "{{SERVER}}/download/4",
+      "workflow_run": {"head_sha": "eee"}
+    }
+  ]
+}

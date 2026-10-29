@@ -1,0 +1,41 @@
+{
+  "data": {
+    "repository": {
+      "pullRequests": {
+        "nodes": [
+          {
+            "number": 1,
+            "locked": false,
+            "headRefOid": "aaa",
+            "comments": {"nodes": [{"databaseId": 5, "body": "unrelated comment @ aaa"}]}
+          },
+          {
+            "number": 2,
+            "locked": false,
+            "headRefOid": "bbb",
+            "comments": {"nodes": [{"databaseId": 77, "body": "{{MARKER}}### Memory usage change @ stale"}]}
+          },
+          {
+            "number": 3,
+            "locked": false,
+            "headRefOid": "ccc",
+            "comments": {"nodes": [{"databaseId": 78, "body": "{{MARKER}}### Memory usage change @ ccc"}]}
+          },
+          {
+            "number": 4,
+            "locked": true,
+            "headRefOid": "ddd",
+            "comments": {"nodes": []}
+          },
+          {
+            "number": 5,
+            "locked": false,
+            "headRefOid": "eee",
+            "comments": {"nodes": []}
+          }
+        ],
+        "pageInfo": {"hasNextPage": false, "endCursor": null}
+      }
+    }
+  }
+}

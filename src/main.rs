@@ -12,11 +12,15 @@ use std::{
     path::PathBuf,
 };
 
+mod cron_job;
+
 /// This is a CI tool to compliment the artifacts created by arduino/compile-sketches action.
 #[derive(Parser, Debug)]
 #[command(name = "report-size-deltas", version, about, long_about)]
 pub struct Args {
-    /// The path to the folder containing sketches' reports (JSON files)
+    /// The path to the folder containing sketches' reports (JSON files).
+    ///
+    /// For scheduled runs, this is the name of the artifacts to look for instead.
     #[arg(
         short,
         long,
@@ -105,6 +109,15 @@ async fn run(args: &[String]) -> Result<()> {
     } else {
         LevelFilter::Info
     });
+
+    if client.client_kind() == "github" && client.event_name().as_deref() == Some("schedule") {
+        let token = args
+            .token
+            .as_deref()
+            .ok_or_else(|| anyhow!("A token is required for scheduled runs"))?;
+        let artifact_name = args.sketches_reports_source.to_string_lossy();
+        return Ok(cron_job::run(client.as_ref(), token, &artifact_name).await?);
+    }
 
     client.start_log_group("Generating comment from JSON files");
     let comment = generate_comment(&args.sketches_reports_source);
