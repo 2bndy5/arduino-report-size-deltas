@@ -132,6 +132,7 @@ The [original GitHub Action] has some disadvantages:
 - [x] Support push events in a non-intrusive way:
   Instead of posting a comment to the commit's diff page, the report/comment is appended to
   the CI workflow run's summary page.
+- [x] Use `schedule` events to work around the permissions needed to post PR comments. See [scheduled CI trigger](#scheduled-ci-trigger) below.
 
 ### Incomplete feature parity
 
@@ -147,41 +148,29 @@ If you need [CSV] output, please submit a feature request so we can discuss the 
 
 [CSV]: https://en.wikipedia.org/wiki/Comma-separated_values
 
-### No special support for scheduled CI trigger
+### Scheduled CI trigger
 
 [schedule]: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#schedule
 
 Often called "cron jobs", the [original GitHub Action] supported GitHub's [schedule] workflow trigger.
-In this case, the [original GitHub Action] would
+This is useful because a workflow triggered by a Pull Request from a fork cannot be granted
+write permissions to post a comment.
 
-1. Traverse open Pull Requests for the repository.
-2. Scan for artifacts produced by `arduino/compile-sketches` action.
-   This involves traversing each commit on each Pull Request to find the latest applicable artifacts.
-3. Post a report/comment in the open Pull Request if one doesn't already exist.
-   This implies traversing the open Pull Request's existing comments to find one that was
-   produced by the [original GitHub Action].
+When the workflow is triggered by the [schedule] event, this action
 
-This feature adds a lot of complexity to satisfy an unknown use case.
-There are no feature requests in the [original GitHub Action] history (or its original experimental source)
-that describe a problem this feature would solve.
+1. Lists open Pull Requests (and their comments) using a single GraphQL query.
+2. Lists the repository's artifacts named by `sketches-reports-source` (paginated, newest first)
+   and matches them to each Pull Request's latest commit.
+3. Downloads the artifact and posts (or updates) a report/comment for each Pull Request that
+   does not already have a report for its latest commit.
 
-Again, a request for this feature is welcome.
-But, the rationale for such complexity should be stated clearly in a way that
-is beneficial to the Arduino Community at large, not just beneficial to the
-[Arduino GitHub Organization](https://github.com/arduino).
+Pull Requests that are locked, have no matching artifact, or already have an up-to-date report
+cost no further requests.
 
-#### Problematic
+In this mode, `sketches-reports-source` is the name of the artifact (not a folder),
+and the [given `token`](#token) must have permission to read artifacts and write Pull Request comments.
+The artifacts' JSON data/content is verified when generating the report;
+artifacts that cannot be parsed are reported as failures for that Pull Request only.
 
-Steps 2 and 3 could easily lock out the [given `token`](#token)'s read/write access by surpassing the
-GitHub REST API's rate limits.
-
-Additionally, force pushed commits on a feature branch can cause some workflow runs to
-correspond with orphaned commits. This further increases the possibility of violating
-the GitHub REST API's rate limits.
-
-The discovered artifacts are not guaranteed to be produced by the `arduino/compile-sketches` action.
-In the [original GitHub Action], the name of the artifact (not the JSON file name) is matched against the
-`sketches-reports-source` input value.
-This approach introduces a surface area for undefined behavior because the
-artifacts' JSON data/content is not verified (for which the solution would further increase the
-possibility of violating the GitHub REST API's rate limits).
+Only the [schedule] event is supported. The `workflow_run` and `workflow_dispatch`
+events are not (yet) handled specially.
