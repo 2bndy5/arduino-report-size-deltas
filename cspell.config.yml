@@ -16,11 +16,13 @@ words:
   - gnueabihf
   - hustcer
   - mbed
+  - microcontroller
   - MIDIUSB
   - mkrgsm
   - mkrzero
   - msvc
   - nextest
+  - nurfile
   - nushell
   - orhun
   - pipx
