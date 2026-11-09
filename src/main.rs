@@ -129,6 +129,9 @@ async fn run(args: &[String]) -> Result<()> {
                 log::info!("Appending to step summary");
                 client.append_step_summary(&comment)?;
                 Ok(())
+            } else if !client.is_pr_same_remote() {
+                log::warn!("PR is from different remote; skipped posting comment.");
+                Ok(())
             } else {
                 log::info!("Posting comment");
                 client
@@ -172,6 +175,7 @@ mod test {
     struct TestParams {
         no_report_data: bool,
         is_not_pr: bool,
+        is_fork: bool,
     }
 
     async fn setup_test(test_params: TestParams) {
@@ -186,6 +190,11 @@ mod test {
                     "state": "open",
                     "number": PR,
                     "locked": false,
+                    "head": {"repo": {
+                        "id": if test_params.is_fork { 2 } else { 1 },
+                        "full_name": if test_params.is_fork { "fork/arduino-report-size-deltas" } else { REPO },
+                    }},
+                    "base": {"repo": {"id": 1, "full_name": REPO}},
                 }})
                 .to_string()
                 .as_bytes(),
@@ -251,6 +260,7 @@ mod test {
                 .match_header("Authorization", format!("token {TOKEN}").as_str())
                 .match_body(Matcher::Any)
                 .with_body("[]")
+                .expect(usize::from(!test_params.is_fork))
                 .create(),
         );
 
@@ -270,6 +280,7 @@ mod test {
                     "user-agent",
                     Matcher::Regex(r"^git_bot_feedback/\d+\.\d+\.\d+".to_string()),
                 )
+                .expect(usize::from(!test_params.is_fork))
                 .create(),
         );
 
@@ -303,6 +314,15 @@ mod test {
     async fn not_a_pr() {
         setup_test(TestParams {
             is_not_pr: true,
+            ..Default::default()
+        })
+        .await;
+    }
+
+    #[tokio::test]
+    async fn fork_pr() {
+        setup_test(TestParams {
+            is_fork: true,
             ..Default::default()
         })
         .await;
