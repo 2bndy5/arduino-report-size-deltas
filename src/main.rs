@@ -130,7 +130,10 @@ async fn run(args: &[String]) -> Result<()> {
                 client.append_step_summary(&comment)?;
                 Ok(())
             } else if !client.is_pr_same_remote() {
-                log::warn!("PR is from different remote; skipped posting comment.");
+                log::warn!(
+                    "PR is from different remote; skipped posting comment. Posting to step-summary instead."
+                );
+                client.append_step_summary(&comment)?;
                 Ok(())
             } else {
                 log::info!("Posting comment");
@@ -209,11 +212,11 @@ mod test {
             env::set_var("GITHUB_TOKEN", TOKEN);
             if test_params.is_not_pr {
                 env::set_var("GITHUB_EVENT_NAME", "push");
-                env::set_var("GITHUB_STEP_SUMMARY", gh_summary_path.path());
             } else {
                 env::set_var("GITHUB_EVENT_NAME", "pull_request");
                 env::set_var("GITHUB_EVENT_PATH", event_payload_path.path());
             }
+            env::set_var("GITHUB_STEP_SUMMARY", gh_summary_path.path());
             env::set_var(
                 "SKETCHES_REPORTS_SOURCE",
                 format!(
@@ -238,7 +241,7 @@ mod test {
                     .contains(&CommentAssemblyError::NotFound.to_string())
             }));
             return;
-        } else if test_params.is_not_pr {
+        } else if test_params.is_not_pr || test_params.is_fork {
             // Nothing is done with REST API.
             // Should just append to step summary and exit 0.
             assert!(run(&[]).await.is_ok());
