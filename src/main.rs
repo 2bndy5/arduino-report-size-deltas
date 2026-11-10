@@ -129,6 +129,12 @@ async fn run(args: &[String]) -> Result<()> {
                 log::info!("Appending to step summary");
                 client.append_step_summary(&comment)?;
                 Ok(())
+            } else if !client.is_pr_same_remote() {
+                log::warn!(
+                    "PR is from different remote; skipped posting comment. Posting to step-summary instead."
+                );
+                client.append_step_summary(&comment)?;
+                Ok(())
             } else {
                 log::info!("Posting comment");
                 client
@@ -172,6 +178,7 @@ mod test {
     struct TestParams {
         no_report_data: bool,
         is_not_pr: bool,
+        is_fork: bool,
     }
 
     async fn setup_test(test_params: TestParams) {
@@ -186,6 +193,11 @@ mod test {
                     "state": "open",
                     "number": PR,
                     "locked": false,
+                    "head": {"repo": {
+                        "id": if test_params.is_fork { 2 } else { 1 },
+                        "full_name": if test_params.is_fork { "fork/arduino-report-size-deltas" } else { REPO },
+                    }},
+                    "base": {"repo": {"id": 1, "full_name": REPO}},
                 }})
                 .to_string()
                 .as_bytes(),
@@ -200,11 +212,11 @@ mod test {
             env::set_var("GITHUB_TOKEN", TOKEN);
             if test_params.is_not_pr {
                 env::set_var("GITHUB_EVENT_NAME", "push");
-                env::set_var("GITHUB_STEP_SUMMARY", gh_summary_path.path());
             } else {
                 env::set_var("GITHUB_EVENT_NAME", "pull_request");
                 env::set_var("GITHUB_EVENT_PATH", event_payload_path.path());
             }
+            env::set_var("GITHUB_STEP_SUMMARY", gh_summary_path.path());
             env::set_var(
                 "SKETCHES_REPORTS_SOURCE",
                 format!(
@@ -229,7 +241,7 @@ mod test {
                     .contains(&CommentAssemblyError::NotFound.to_string())
             }));
             return;
-        } else if test_params.is_not_pr {
+        } else if test_params.is_not_pr || test_params.is_fork {
             // Nothing is done with REST API.
             // Should just append to step summary and exit 0.
             assert!(run(&[]).await.is_ok());
@@ -251,6 +263,7 @@ mod test {
                 .match_header("Authorization", format!("token {TOKEN}").as_str())
                 .match_body(Matcher::Any)
                 .with_body("[]")
+                .expect(usize::from(!test_params.is_fork))
                 .create(),
         );
 
@@ -270,6 +283,7 @@ mod test {
                     "user-agent",
                     Matcher::Regex(r"^git_bot_feedback/\d+\.\d+\.\d+".to_string()),
                 )
+                .expect(usize::from(!test_params.is_fork))
                 .create(),
         );
 
@@ -303,6 +317,15 @@ mod test {
     async fn not_a_pr() {
         setup_test(TestParams {
             is_not_pr: true,
+            ..Default::default()
+        })
+        .await;
+    }
+
+    #[tokio::test]
+    async fn fork_pr() {
+        setup_test(TestParams {
+            is_fork: true,
             ..Default::default()
         })
         .await;
