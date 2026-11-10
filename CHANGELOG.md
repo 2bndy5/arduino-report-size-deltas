@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!-- markdownlint-disable MD024 -->
 
+## [1.3.1] - 2026-11-10
+
+### <!-- 1 --> 🚀 Added
+
+- Skip comments for PRs from a fork by @2bndy5 in [#104](https://github.com/2bndy5/arduino-report-size-deltas/pull/104)
+
+### <!-- 6 --> 📦 Dependency updates
+
+- Bump the actions group with 4 updates by @dependabot[bot] in [#101](https://github.com/2bndy5/arduino-report-size-deltas/pull/101)
+- Bump tokio from 1.53.3 to 1.54.1 in the cargo group by @dependabot[bot] in [#100](https://github.com/2bndy5/arduino-report-size-deltas/pull/100)
+- Bump the actions group with 2 updates by @dependabot[bot] in [#103](https://github.com/2bndy5/arduino-report-size-deltas/pull/103)
+
+### <!-- 9 --> 🗨️ Changed
+
+- Pin node.js to LTS in pre-commit CI workflow by @2bndy5 in [#102](https://github.com/2bndy5/arduino-report-size-deltas/pull/102)
+
+[1.3.1]: https://github.com/2bndy5/arduino-report-size-deltas/compare/v1.3.0...v1.3.1
+
+Full commit diff: [`v1.3.0...v1.3.1`][1.3.1]
+
 ## [1.3.0] - 2026-10-29
 
 ### <!-- 1 --> 🚀 Added
@@ -18,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump cargo-bins/cargo-binstall by @dependabot[bot] in [#96](https://github.com/2bndy5/arduino-report-size-deltas/pull/96)
 - Bump the cargo group with 2 updates by @dependabot[bot] in [#95](https://github.com/2bndy5/arduino-report-size-deltas/pull/95)
 - Bump rustls from 0.23.45 to 0.23.46 by @dependabot[bot] in [#98](https://github.com/2bndy5/arduino-report-size-deltas/pull/98)
+- Bump version to v1.3.0 by @2bndy5 in [`f3420e1`](https://github.com/2bndy5/arduino-report-size-deltas/commit/f3420e15be925207d6c3681fcb467c33c706dd36)
 
 ### <!-- 8 --> 📝 Documentation
 
