@@ -330,4 +330,50 @@ mod test {
         })
         .await;
     }
+
+    #[tokio::test]
+    async fn scheduled_run_requires_token() {
+        let _server = Server::new_async().await;
+        unsafe {
+            env::set_var("GITHUB_ACTIONS", "true");
+            env::set_var("GITHUB_REPOSITORY", REPO);
+            env::set_var("GITHUB_EVENT_NAME", "schedule");
+            env::remove_var("GITHUB_TOKEN");
+        }
+        let err = run(&[]).await.unwrap_err();
+        assert!(err.to_string().contains("token is required"));
+    }
+
+    #[tokio::test]
+    async fn post_comment_fails() {
+        let mut event_payload_path = NamedTempFile::new().unwrap();
+        event_payload_path
+            .write_all(
+                serde_json::json!({
+                "pull_request": {
+                    "draft": false,
+                    "state": "open",
+                    "number": PR,
+                    "locked": false,
+                    "head": {"repo": {"id": 1, "full_name": REPO}},
+                    "base": {"repo": {"id": 1, "full_name": REPO}},
+                }})
+                .to_string()
+                .as_bytes(),
+            )
+            .unwrap();
+        unsafe {
+            env::set_var("GITHUB_ACTIONS", "true");
+            // nothing listens on this port, so the REST API request fails
+            env::set_var("GITHUB_API_URL", "http://127.0.0.1:1");
+            env::set_var("GITHUB_REPOSITORY", REPO);
+            env::set_var("GITHUB_SHA", "deadbeef");
+            env::set_var("GITHUB_TOKEN", TOKEN);
+            env::set_var("GITHUB_EVENT_NAME", "pull_request");
+            env::set_var("GITHUB_EVENT_PATH", event_payload_path.path());
+            env::set_var("SKETCHES_REPORTS_SOURCE", "tests/size-deltas-reports-new");
+        }
+        let err = run(&[]).await.unwrap_err();
+        assert!(err.to_string().contains("Failed to post comment"));
+    }
 }

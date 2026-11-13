@@ -59,4 +59,25 @@ mod test {
         let comment = generate_comment("tests/test_assets").unwrap();
         fs::write("tests/test_assets/out.md", comment).unwrap();
     }
+
+    #[test]
+    fn missing_relative_delta() {
+        let dir = tempfile::tempdir().unwrap();
+        let mut report: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string("tests/size-deltas-reports-new/arduino-avr-nano.json").unwrap(),
+        )
+        .unwrap();
+        for board in report["boards"].as_array_mut().unwrap() {
+            for sketch in board["sketches"].as_array_mut().unwrap() {
+                for size in sketch["sizes"].as_array_mut().unwrap() {
+                    if let Some(delta) = size["delta"].as_object_mut() {
+                        delta.remove("relative");
+                    }
+                }
+            }
+        }
+        fs::write(dir.path().join("report.json"), report.to_string()).unwrap();
+        let comment = generate_comment(dir.path()).unwrap();
+        assert!(comment.contains("### `arduino:avr:nano`"));
+    }
 }
